@@ -383,16 +383,6 @@ const OrderPage = () => {
                         <h2 className="text-xl font-semibold mb-4">Choose Payment Method</h2>
 
                         <div className="flex gap-4">
-                            {/* <button
-                                onClick={() => handlePaymentSelection("online Payment")}
-                                className={`px-4 py-2 rounded-lg border ${paymentMethod === "online Payment"
-                                    ? "bg-purple-600 text-white"
-                                    : "bg-gray-100"
-                                    }`}
-                            >
-                                Online Payment
-                            </button> */}
-
                             <button
                                 onClick={() => handlePaymentSelection("Cash on delivery")}
                                 className={`px-4 py-2 rounded-lg border ${paymentMethod === "Cash on delivery"
