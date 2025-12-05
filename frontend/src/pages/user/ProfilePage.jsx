@@ -290,17 +290,7 @@ const getAuthToken=()=>{
       toast.success("Profile update successfully")
       setIsEditing(false)
       loadUserData()
-      // if (updatedUser) {
-      //   setUserData(prev => ({
-      //     ...prev,
-      //     currentPassword: "",
-      //     newPassword: "",
-      //     confirmPassword: ""
-      //   }));
-      //   setIsEditing(false);
-      //   await loadUserData();
-      //   toast.success("Profile updated successfully!");
-      // }
+      
     } catch (err) {
       console.error("Error saving user data:", err);
       toast.error(err.message || "Error updating profile. Please try again");
