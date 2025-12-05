@@ -2,7 +2,6 @@
 import React from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import HomePage from '../../pages/user/HomePage';
-import { withAuth } from '../../pages/auth/WithAuth';
 import ProductPage from '../../pages/user/ProductPage';
 import WishListPage from '../../pages/user/WishListPage';
 import ProfilePage from '../../pages/user/ProfilePage';
