@@ -1,4 +1,3 @@
-import React from 'react'
 import Qrcode from '../../assets/Qrcode.png'
 import appstore from '../../assets/AppStore.png'
 import goopleplay from '../../assets/GooglePlay.png'

@@ -1,5 +1,3 @@
-// src/components/ProductPopup.jsx
-import React from "react";
 import { motion } from "framer-motion";
 import { X, Plus, Minus, ShoppingCart, Heart } from "lucide-react";
 

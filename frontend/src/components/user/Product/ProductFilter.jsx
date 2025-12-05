@@ -1,7 +1,3 @@
-// src/components/ProductFilter.jsx
-import React from "react";
-import { useState } from "react";
-
 export default function ProductFilter({ filters, setFilters, categories, onClear }) {
   const handle = (k, v) => setFilters((p) => ({ ...p, [k]: v }));
 

@@ -1,7 +1,7 @@
 // src/components/ProductCard.jsx
 import React from "react";
 import { motion } from "framer-motion";
-import { Eye, Heart, Star, ShoppingCart } from "lucide-react";
+import { Eye, Heart, Star} from "lucide-react";
 
 export default function ProductCard({ product, onOpen, onToggleLike, isLiked, onAddToCart }) {
   return (
