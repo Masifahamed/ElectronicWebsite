@@ -1,7 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
 import Timer from './Timer';
-//import { products } from '../../../ultis/constant';
-//import { Heart, Eye, ShoppingCart } from 'lucide-react';
 import ProductGrid from './ProductGrid';
 
 const TodaysSales = () => {
@@ -11,7 +9,7 @@ const TodaysSales = () => {
                 {/* Header with Timer */}
                 <div className="flex flex-col lg:flex-row justify-between gap-10 items-start lg:items-center mb-12">
                     <div className="mb-6 lg:mb-0">
-                        <h2 className="text-4xl lg:text-5xl font-pop font-bold bg-gradient-to-r from-[#1600A0] to-[#9B77E7] bg-clip-text text-transparent mb-4">
+                        <h2 className="text-4xl lg:text-5xl font-pop font-bold bg-gradient-to-r from-[#1600A0] pb-2 to-[#9B77E7] bg-clip-text text-transparent mb-4">
                             Today's Sales
                         </h2>
                         <p className="text-gray-600 text-lg">

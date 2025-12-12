@@ -95,100 +95,9 @@ const OrderPage = () => {
         setPaymentMethod(method)
         setShowAddressForm(true)
     }
-    // const handleOnlinePayment = async () => {
-    //     try {
-    //         setIsPlacing(true);
-
-    //         // 1️⃣ Create Razorpay Order ID (from backend)
-    //         const order = await axios.post(`${API_BASE}/api/payment/create-order`, {
-    //             orderId: "ORDER_" + Date.now(),  // Convert to paise
-    //             totalprice: totalprice
-    //         });
-    //         if (!createRazorpayOrder.data.success) {
-    //             throw Error("Failed to create Razorpay order")
-    //         }
-    //         const { orderId, amount } = order.data;
-
-    //         // 2️⃣ Open Razorpay Checkout
-    //         const options = {
-    //             key: "YOUR_RAZORPAY_KEY_ID", // frontend key
-    //             amount: amount,
-    //             currency: "INR",
-    //             name: "Your Store",
-    //             description: "Order Payment",
-    //             order_id: orderId,
-    //             handler: async function (response) {
-    //                 try {
-    //                     // 3️⃣ Verify Payment
-    //                     const verify = await axios.post(`${API_BASE}/api/payment/verify-payment`, {
-    //                         razorpay_order_id: response.razorpay_order_id,
-    //                         razorpay_payment_id: response.razorpay_payment_id,
-    //                         razorpay_signature: response.razorpay_signature,
-    //                         orderIdFromDB: orderId,   // MUST SEND THIS
-    //                     });
-
-    //                     if (!verify.data.success) {
-    //                         throw Error("Payment Verification Failed");
-    //                     }
-
-    //                     // 4️⃣ Create the order in database after payment success
-    //                     await axios.post(`${API_BASE}/api/order/createorder`, {
-    //                         userId,
-    //                         products: cart,
-    //                         ordersummary: {
-    //                             items: totalItems,
-    //                             subtotal,
-    //                             saving,
-    //                             tax,
-    //                             totalprice,
-    //                             paymentmethod: "online Payment",
-    //                             status: "Active",
-    //                             address
-    //                         },
-    //                         paymentInfo: {
-    //                             razorpay_order_id: response.razorpay_order_id,
-    //                             razorpay_payment_id: response.razorpay_payment_id,
-    //                             razorpay_signature: response.razorpay_signature,
-    //                             status: "success"
-    //                         }
-    //                     });
-
-    //                     // 5️⃣ Clear cart
-    //                     await axios.delete(`${API_BASE}/api/cart/deletecart/${userId}`);
-
-    //                     setmessage("Payment Successful! Order Placed.");
-    //                     setShowPopup(true);
-
-    //                     setTimeout(() => navigate("/orders/active"), 1500);
-
-    //                 } catch (verifyErr) {
-    //                     console.log("Verification Error:", verifyErr);
-    //                     setmessage("Payment Verification Failed");
-    //                     setShowPopup(true);
-    //                 }
-    //             },
-    //         };
-    //         const razor = new window.Razorpay(options)
-    //         razor.open()
-    //     } catch (err) {
-    //         console.log("Payment Error:", err)
-    //         setmessage("Payment failed try again")
-    //         setShowPopup(true)
-    //     } finally {
-    //         setIsPlacing(false)
-    //     }
-    // }
-    // const handleCODOrder = async () => {
-
-    // }
 
     const placeOrder = async () => {
-        // if (!paymentMethod) {
-        //     setmessage("Please choose a payment method");
-        //     setShowPopup(true);
-        //     setTimeout(() => setShowPopup(false), 1800);
-        //     return;
-        // }
+
         try {
 
             if (!address || address.trim().length < 5) {
@@ -231,18 +140,18 @@ const OrderPage = () => {
                 }
             };
 
-          const res=await axios.post(`${API_BASE}/api/order/createorder`, orderPayload);
+            const res = await axios.post(`${API_BASE}/api/order/createorder`, orderPayload);
 
             // clear cart on backend
-            if(res.data.success){
-            await axios.delete(`http://localhost:3500/api/cart/deletecart/${userId}`);
-            alert("Order Placed Successfully")
-            setmessage("Order Placed Successfully")
-            setShowPopup(true)
-            setTimeout(() => {
-                navigate('/orders/active');
-            }, 1500);
-        }
+            if (res.data.success) {
+                await axios.delete(`http://localhost:3500/api/cart/deletecart/${userId}`);
+                alert("Order Placed Successfully")
+                setmessage("Order Placed Successfully")
+                setShowPopup(true)
+                setTimeout(() => {
+                    navigate('/orders/active');
+                }, 1500);
+            }
 
         } catch (err) {
             console.log("Order error", err);

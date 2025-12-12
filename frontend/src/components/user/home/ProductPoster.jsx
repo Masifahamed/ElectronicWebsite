@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import speaker from '../../../assets/speaker.png';
 import axios from 'axios';
+import SuccessPopup from './../SuccessPopup'
 
 const ProductPoster = () => {
   const [timeLeft, setTimeLeft] = useState({
@@ -13,12 +14,12 @@ const ProductPoster = () => {
   const user = JSON.parse(localStorage.getItem("auth_user"))
   const userId = user?._id
 
-  const [showCartMessage, setShowCartMessage] = useState(false)
+  const [showCartMessage, setShowCartMessage] = useState("")
   const [heroData, setHeroData] = useState(null);
-  const [successmessage, setsuccessmessage] = useState('')
   const [displayData, setDisplayData] = useState({});
   const [loading, setLoading] = useState(false)
   const [cart, setCart] = useState([])
+  const [showProductPopup, setShowProductPopup] = useState(false)
 
   const loadCart = async () => {
     try {
@@ -54,16 +55,16 @@ const ProductPoster = () => {
       })
       console.log(res.data.message)
 
-      alert("product is added to cart successfully")
+     // alert("product is added to cart successfully")
       // Show success message
-      setShowCartMessage(true);
+      setShowCartMessage("product added successfully");
 
       // Close popup after adding to cart
-      setShowProductPopup(false);
+      setShowProductPopup(true);
       // Auto hide message after 3 seconds
       setTimeout(() => {
-        setShowCartMessage(false);
-      });
+        setShowProductPopup(false)
+      }, 2000);
 
 
     } catch (err) {
@@ -203,6 +204,10 @@ const ProductPoster = () => {
           />
         </div>
       </div>
+      {showProductPopup && (
+      <SuccessPopup  bgcolor="success" title={showCartMessage}/>
+      )
+      }
     </section>
   );
 };

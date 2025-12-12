@@ -56,7 +56,11 @@ const wishlistSchema = new mongoose.Schema({
                 type: String,
                 required: [true, 'Required the image URL'],
 
-            }
+            },
+            addedDate: {
+                type: Date,
+                default: Date.now
+            },
         }
     ]
 

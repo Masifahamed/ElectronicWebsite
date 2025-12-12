@@ -4,11 +4,14 @@ import { Heart, ShoppingCart, Trash2, Share2, Eye } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../auth/WithAuth";
 import axios from "axios";
+import SuccessPopup from '../../components/user/SuccessPopup'
 
 const WishlistPage = () => {
   const [wishlistItems, setWishlistItems] = useState([]);
   const [sortBy, setSortBy] = useState("dateAdded");
   const navigate = useNavigate();
+  const [Message, setMessage] = useState("")
+  const [popup, setPopup] = useState(false)
   const [selectedProduct, setSelectedProduct] = useState(null)
   const [showPopup, setShowPopup] = useState(false)
   const user = JSON.parse(localStorage.getItem('auth_user'))
@@ -25,6 +28,10 @@ const WishlistPage = () => {
       if (res.data?.data?.product) {
         const formatted = res.data.data.product.map((p) => ({
           ...p, // getting product details
+          rating: p.rating && p.rating <= 5 ? p.rating : Math.floor(Math.random() * 5) + 1,
+          views: p.views || Math.floor(Math.random() * 1000) + 10,
+          likes: p.likes || Math.floor(Math.random() * 500) + 50,
+          reviews: p.reviews || Math.floor(Math.random() * 100) + 1,
           addedDate: p.addedDate,
         }));
         setWishlistItems(formatted);
@@ -40,12 +47,13 @@ const WishlistPage = () => {
   // Remove item
   const removeFromWishlist = async (productId) => {
     try {
-      const user=JSON.parse(localStorage.getItem("auth_user"))
-      const userId=user?._id
-
       await axios.delete(`http://localhost:3500/api/wishlist/remove/${userId}/${productId}`);
- 
+      setMessage("Product remove from wishlist")
+      setPopup(true)
       setWishlistItems((prev) => prev.filter((item) => item.productId !== productId));
+      setTimeout(() => {
+        setPopup(false)
+      }, 2000);
     } catch (error) {
       console.error(error);
     }
@@ -54,8 +62,7 @@ const WishlistPage = () => {
   // Move item to cart
   const moveToCart = async (product) => {
     try {
-      const user = JSON.parse(localStorage.getItem("auth_user"))
-      const userId = user?._id
+
       const res = await axios.post("http://localhost:3500/api/cart/add", {
         userId: userId,
         productId: product._id,
@@ -64,13 +71,20 @@ const WishlistPage = () => {
         price: product.price,
         discount: product.discount,
         rating: product.rating,
+        originalprice:product.originalprice,
         category: product.category,
         quantity: 1
       })
-      console.log(res.data.message)
+      //console.log(res.data.message)
       // Here you would typically add to cart
-      console.log("Moving to cart:", product);
-      alert(`${product.productname} added to cart!`);
+      //console.log("Moving to cart:", product);
+      //alert(`${product.productname} added to cart!`);
+      setMessage(`${product.productname} added to cart`)
+      setPopup(true)
+      setSelectedProduct(false)
+      setTimeout(() => {
+        setPopup(false)
+      }, 2000);
       removeFromWishlist(product);
       // setshowPopup(false)
     } catch (err) {
@@ -101,7 +115,7 @@ const WishlistPage = () => {
       case "priceHighLow":
         return sorted.sort((a, b) => b.price - a.price);
       case "name":
-        return sorted.sort((a, b) => a.name.localeCompare(b.name));
+        return sorted.sort((a, b) => a.productname.localeCompare(b.productname));
       case "rating":
         return sorted.sort((a, b) => b.rating - a.rating);
       case "dateAdded":
@@ -283,7 +297,7 @@ const WishlistPage = () => {
 
                   {/* Added Date */}
                   <div className="text-xs text-gray-500 text-center mt-3">
-                    Added on {new Date(product.addedDate).toLocaleDateString()}
+                    Added on {new Date(product.addedDate).toLocaleString()}
                   </div>
                 </div>
               </motion.div>
@@ -340,7 +354,11 @@ const WishlistPage = () => {
           </div>
         </div>
       )}
-
+      {
+        popup && (
+          <SuccessPopup title={Message} bgcolor="success"/>
+        )
+      }
 
     </div>
   );

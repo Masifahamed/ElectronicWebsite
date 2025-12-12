@@ -52,7 +52,7 @@ const ArrivalNew = () => {
         category: product.category,
       });
       alert("product is added cart successfully")
-      navigate("/orders");
+     // navigate("/orders");
     } catch (err) {
       console.error("Error adding to cart", err);
     }

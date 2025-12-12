@@ -21,8 +21,8 @@ const AdminDashboard = () => {
 
   const handleLogout = () => {
     if (window.confirm('Are you sure you want to logout?')) {
-      localStorage.removeItem('admin_token');
-      localStorage.removeItem('admin_user');
+      localStorage.removeItem('auth_token');
+      localStorage.removeItem('auth_user');
       window.dispatchEvent(new Event('storage'));
       navigate('/auth/login');
     }
@@ -33,7 +33,8 @@ const AdminDashboard = () => {
   };
 
   useEffect(() => {
-    const user = JSON.parse(localStorage.getItem('admin_user') || 'null');
+    const user = JSON.parse(localStorage.getItem('auth_user') || 'null');
+    console.log(user)
     if (!user || user.role !== 'admin') {
       navigate('/auth/login');
       return;

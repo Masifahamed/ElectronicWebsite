@@ -185,7 +185,7 @@ const OrdersContent = () => {
                       <div className="text-sm font-medium text-gray-900">{o.orderId}</div>
                       <div className="text-xs text-gray-500">{String(o._id).slice(-6)}</div>
                     </td>
-                    <td className="text-red-500 px-6 py-4">User{o.userId?.first}</td>
+                    <td className="text-red-500 px-6 py-4">{o.userId?.first}</td>
                     <td className="px-6 py-4">{o.products?.length || 0}</td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="text-sm font-semibold">₹{total.toLocaleString('en-IN')}</div>

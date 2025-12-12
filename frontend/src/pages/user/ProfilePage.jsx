@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import { User, Mail, Lock, Eye, EyeOff, Save, Edit2, X, Calendar, ShoppingBag, Heart, LogOut, Package, Clock, CheckCircle } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
+import axios from "axios";
 //import PopupMessage from "../../components/user/PopupMessage";
 
 const ProfilePage = () => {
@@ -21,18 +22,11 @@ const ProfilePage = () => {
     currentPassword: ""
   });
   const [memberSince, setMemberSince] = useState("");
-  const [wishlistStats, setWishlistStats] = useState({
-    totalItems: 0,
-    totalValue: 0,
-    lastUpdated: 'Never'
-  });
+  const [wishlistStats, setWishlistStats] = useState([]);
   const [userId, setUserId] = useState(null);
   const [errors, setErrors] = useState({});
   const [orderStats, setOrderStats] = useState({
-    totalOrders: 0,
-    pending: 0,
-    delivered: 0,
-    totalSpent: 0
+
   });
   const navigate = useNavigate();
 
@@ -44,6 +38,8 @@ const ProfilePage = () => {
     loadUserData();
   }, []);
 
+  const user = JSON.parse(localStorage.getItem("auth_user"))
+  const userinfo = user._id
   // Auto-focus when editing mode changes
   useEffect(() => {
     if (isEditing && firstNameInputRef.current) {
@@ -61,18 +57,18 @@ const ProfilePage = () => {
     try {
       const userInfo = localStorage.getItem("auth_user");
       const authToken = localStorage.getItem("auth_token");
-      
+
       console.log("Auth Token exists:", !!authToken);
       console.log("User Info exists:", !!userInfo);
-      
+
       if (userInfo) {
         const user = JSON.parse(userInfo);
         console.log("Parsed user info:", user);
-        if(user._id) return user._id;
-        if(user.id) return user.userId;
-        if(user.userId) return user.userId;
-        if(user.user&& user.user._id) return user.user._id;
-        console.log("No user ID found in user info:",user)
+        if (user._id) return user._id;
+        if (user.id) return user.userId;
+        if (user.userId) return user.userId;
+        if (user.user && user.user._id) return user.user._id;
+        console.log("No user ID found in user info:", user)
       }
       return null;
     } catch (error) {
@@ -80,72 +76,123 @@ const ProfilePage = () => {
       return null
     }
   };
-//Get auth token
-const getAuthToken=()=>{
-  try{
-    const token=localStorage.getItem('auth_token')
-    if(!token){
-      console.error("NO auth token found in localStorage")
+  //Get auth token
+  const getAuthToken = () => {
+    try {
+      const token = localStorage.getItem('auth_token')
+      if (!token) {
+        console.error("NO auth token found in localStorage")
+        return null
+      }
+      return token
+    } catch (error) {
+      console.error("Error getting auth token:", error);
       return null
     }
-    return token
-  }catch(error){
-    console.error("Error getting auth token:",error);
-    return null
   }
-}
   const fetchUserData = async () => {
-  try {
-    const token = getAuthToken();
-    const currentUserId = getUserId();
+    try {
+      const token = getAuthToken();
+      const currentUserId = getUserId();
 
-    const response = await fetch(`${API_BASE_URL}/getsingleuser/${currentUserId}`, {
-      method: "GET",
-      headers: {
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
-      },
-    });
+      const response = await fetch(`${API_BASE_URL}/getsingleuser/${currentUserId}`, {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      });
 
-    const result = await response.json();
+      const result = await response.json();
 
-    if (!response.ok) {
-      throw new Error(result.message || "Failed to load user");
+      if (!response.ok) {
+        throw new Error(result.message || "Failed to load user");
+      }
+
+      return result.data; // ALWAYS use `.data`
+    } catch (error) {
+      console.error("Fetch user error:", error);
+      throw error;
     }
-
-    return result.data; // ALWAYS use `.data`
-  } catch (error) {
-    console.error("Fetch user error:", error);
-    throw error;
-  }
-};
+  };
 
   const updateUserData = async (updateData) => {
-  try {
-    const token = getAuthToken();
-    const currentUserId = getUserId();
+    try {
+      const token = getAuthToken();
+      const currentUserId = getUserId();
 
-    const response = await fetch(`${API_BASE_URL}/updateuser/${currentUserId}`, {
-      method: "PUT",
-      headers: {
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(updateData),
-    });
+      const response = await fetch(`${API_BASE_URL}/updateuser/${currentUserId}`, {
+        method: "PUT",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(updateData),
+      });
 
-    const result = await response.json();
+      const result = await response.json();
 
-    if (!response.ok) {
-      throw new Error(result.message || "Update failed");
+      if (!response.ok) {
+        throw new Error(result.message || "Update failed");
+      }
+
+      return result.data;
+    } catch (error) {
+      console.error("Update user error:", error);
+      throw error;
     }
-
-    return result.data;
-  } catch (error) {
-    console.error("Update user error:", error);
-    throw error;
+  };
+  const calculateorder = (orders) => {
+    const totals = {
+      items: 0,
+      subtotal: 0,
+      totalprice: 0,
+      saving: 0,
+      address:""
+    }
+    orders.forEach(order => {
+      totals.items += order.items || 0;
+      totals.subtotal += order.subtotal || 0;
+      totals.totalprice += order.totalprice;
+      totals.saving += order.saving || 0;
+      totals.address += order.address||"Address is not provide"
+    });
+    return totals
   }
-};
+  const fetchorder = async (userinfo) => {
+    try {
+
+      const res = await axios.get(`http://localhost:3500/api/order/${userinfo}`)
+      const orderlist = res.data.data.map((order) => ({
+        //orderId: order.orderId,
+        items: order.ordersummary?.items,
+        subtotal: order.ordersummary?.subtotal,
+        totalprice: order.ordersummary?.totalprice,
+        saving: order.ordersummary?.saving,
+       // products: order.products,
+        //date: order.ordersummary?.data,
+        //status: order.ordersummary?.status,
+        address: order.ordersummary?.address,
+
+      }))
+      return orderlist
+    } catch (err) {
+      console.log("Error in data:", err.message)
+
+      return []
+    }
+  }
+
+  
+
+  useEffect(() => {
+    const loadorder = async () => {
+      const data = await fetchorder(userinfo)
+      const calculate = calculateorder(data)
+      setOrderStats(calculate)
+    }
+    loadorder()
+  }, [])
 
   // Load user data with profile information - FIXED: Better error handling
   const loadUserData = async () => {
@@ -155,14 +202,14 @@ const getAuthToken=()=>{
 
       if (response) {
         // Handle different response structures
-         const user = response;
-        
+        const user = response;
+
         // console.log("Processing user data:", user);
 
         if (user) {
           // Set basic user data
           setUserData({
-      
+
             first: user.first || "",
             last: user.last || "",
             email: user.email || "",
@@ -170,38 +217,24 @@ const getAuthToken=()=>{
           });
 
           setUserId(user._id)
-          // Access profile data from UserModel
-          //const profileData = user.profile || {};
-          
-          //console.log('Profile data from backend:', profileData);
+
 
           // Set member since date
           const registrationDate = user.createdAt || new Date().toISOString();
           setMemberSince(new Date(registrationDate).toLocaleDateString('en-IN', {
             year: 'numeric',
-            month: 'long'
+            month: 'long',
           }));
-          
-          
-        setUserId(user._id);
-          // Set order statistics from profile object
-          setOrderStats({
-            totalOrders: profileData.totalorder || 0,
-            pending: profileData.pending || 0,
-            delivered: profileData.delivery || 0,
-            totalSpent: profileData.totalspent || 0
-          });
 
-          // Set wishlist statistics from profile object
-          setWishlistStats({
-            totalItems: profileData.wishlist || 0,
-            totalValue: profileData.totalvalue || 0,
-            lastUpdated: 'Recently'
-          });
+
+          setUserId(user._id);
+          // Set order statistics from profile object
+
+
           setMemberSince(
-            new Date(user.createdAt).toLocaleDateString("en_IN",{
-              month:"long",
-              year:"numeric",
+            new Date(user.createdAt).toLocaleDateString("en_IN", {
+              month: "long",
+              year: "numeric",
             })
           )
         }
@@ -209,9 +242,9 @@ const getAuthToken=()=>{
         console.log("No user data received from API");
       }
     } catch (err) {
-      console.error("Error loading user data:", err);
+      console.log("Error loading user data:", err);
       //toast.error("Failed to load profile data. Please login again.");
-      <PopupMessage message={"Failed to load Profile Data.Please login again"}/>
+      //<PopupMessage message={"Failed to load Profile Data.Please login again"} />
     } finally {
       setIsLoading(false);
     }
@@ -219,7 +252,7 @@ const getAuthToken=()=>{
 
   const validateForm = () => {
     const newErrors = {};
-    
+
     if (!userData.first.trim() || userData.first.length < 2) {
       newErrors.first = "First name is required and must be at least 2 characters";
     }
@@ -247,7 +280,7 @@ const getAuthToken=()=>{
         newErrors.confirmPassword = "New passwords do not match";
       }
     }
-    
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -265,6 +298,27 @@ const getAuthToken=()=>{
       }));
     }
   };
+  const wishlistsetup = async () => {
+    try {
+      //const userId = getUserId()
+      const res = await axios.get(`http://localhost:3500/api/wishlist/single/${userinfo}`)
+      const formatted = res.data.data.product.map((p) => ({
+        ...p,
+        rating: p.rating && p.rating <= 5 ? p.rating : Math.floor(Math.random() * 5) + 1,
+        views: p.views || Math.floor(Math.random() * 1000) + 10,
+        likes: p.likes || Math.floor(Math.random() * 500) + 50,
+        reviews: p.reviews || Math.floor(Math.random() * 100) + 1,
+        addedDate: p.addedDate,
+      }))
+      setWishlistStats(formatted)
+    } catch (err) {
+      console.log(err.message)
+    }
+  }
+
+  useEffect(() => {
+    wishlistsetup()
+  }, [])
 
   const handleSave = async (e) => {
     e.preventDefault();
@@ -279,18 +333,18 @@ const getAuthToken=()=>{
         email: userData.email,
         phone: userData.phone
       };
-      
+
       if (userData.newPassword) {
         updateData.currentPassword = userData.currentPassword;
         updateData.newPassword = userData.newPassword;
         updateData.confirmPassword = userData.confirmPassword;
       }
-      
+
       await updateUserData(updateData);
       toast.success("Profile update successfully")
       setIsEditing(false)
       loadUserData()
-      
+
     } catch (err) {
       console.error("Error saving user data:", err);
       toast.error(err.message || "Error updating profile. Please try again");
@@ -401,24 +455,27 @@ const getAuthToken=()=>{
         {/* Stats Cards */}
         <div className="max-w-6xl grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
           {/* Total Orders */}
+
           <div className="bg-white rounded-2xl shadow-lg p-6">
+
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-gray-600">Total Orders</p>
-                <p className="text-2xl font-bold text-gray-800">{orderStats.totalOrders}</p>
+                <p className="text-2xl font-bold text-gray-800">{orderStats.items}</p>
               </div>
               <div className="p-3 bg-blue-100 rounded-lg">
                 <ShoppingBag className="w-6 h-6 text-blue-600" />
               </div>
             </div>
+
           </div>
 
           {/* Pending Orders */}
-          <div className="bg-white rounded-2xl shadow-lg p-6">
+          < div className="bg-white rounded-2xl shadow-lg p-6" >
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-600">Pending</p>
-                <p className="text-2xl font-bold text-orange-500">{orderStats.pending}</p>
+                <p className="text-sm text-gray-600">Subtotal</p>
+                <p className="text-2xl font-bold text-orange-500">{orderStats.subtotal}</p>
               </div>
               <div className="p-3 bg-orange-100 rounded-lg">
                 <Clock className="w-6 h-6 text-orange-600" />
@@ -430,8 +487,8 @@ const getAuthToken=()=>{
           <div className="bg-white rounded-2xl shadow-lg p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-600">Delivered</p>
-                <p className="text-2xl font-bold text-green-500">{orderStats.delivered}</p>
+                <p className="text-sm text-gray-600">Total Price</p>
+                <p className="text-2xl font-bold text-green-500">{orderStats.totalprice}</p>
               </div>
               <div className="p-3 bg-green-100 rounded-lg">
                 <CheckCircle className="w-6 h-6 text-green-600" />
@@ -443,14 +500,15 @@ const getAuthToken=()=>{
           <div className="bg-white rounded-2xl shadow-lg p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-600">Total Spent</p>
-                <p className="text-2xl font-bold text-purple-500">₹{orderStats.totalSpent}</p>
+                <p className="text-sm text-gray-600">Total Saving</p>
+                <p className="text-2xl font-bold text-purple-500">₹{orderStats.saving}</p>
               </div>
               <div className="p-3 bg-purple-100 rounded-lg">
                 <Package className="w-6 h-6 text-purple-600" />
               </div>
             </div>
           </div>
+
         </div>
 
         {/* Wishlist Summary */}
@@ -461,20 +519,22 @@ const getAuthToken=()=>{
               <span>Wishlist Summary</span>
             </h3>
             <div className="text-xs text-gray-500">
-              Last updated: {wishlistStats.lastUpdated}
+              {wishlistStats.length} {wishlistStats.length === 1 ? "item" : "items"} saved
             </div>
           </div>
-
-          <div className="grid grid-cols-2 gap-4">
-            <div className="text-center p-4 bg-gray-50 rounded-lg">
-              <p className="text-2xl font-bold text-red-500">{wishlistStats.totalItems}</p>
-              <p className="text-sm text-gray-600">Items Saved</p>
+          {wishlistStats.length > 0 && (
+            <div className="grid grid-cols-2 gap-4">
+              <div className="text-center p-4 bg-gray-50 rounded-lg">
+                <p className="text-2xl font-bold text-red-500">{wishlistStats.length}</p>
+                <p className="text-sm text-gray-600">Items Saved</p>
+              </div>
+              <div className="text-center p-4 bg-gray-50 rounded-lg">
+                <p className="text-2xl font-bold text-green-500">₹{wishlistStats.reduce((total, item) => total + item.price, 0)}</p>
+                <p className="text-sm text-gray-600">Total Value</p>
+              </div>
             </div>
-            <div className="text-center p-4 bg-gray-50 rounded-lg">
-              <p className="text-2xl font-bold text-green-500">₹{wishlistStats.totalValue}</p>
-              <p className="text-sm text-gray-600">Total Value</p>
-            </div>
-          </div>
+          )
+          }
         </div>
 
         {/* Profile Form Card - FIXED: Removed isRegistration references */}
@@ -500,9 +560,8 @@ const getAuthToken=()=>{
                     value={userData.first}
                     onChange={handleInputChange}
                     disabled={!isEditing || isLoading}
-                    className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300 ${
-                      errors.first ? 'border-red-500' : 'border-gray-300'
-                    } ${!isEditing ? 'bg-gray-100 cursor-not-allowed' : ''}`}
+                    className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300 ${errors.first ? 'border-red-500' : 'border-gray-300'
+                      } ${!isEditing ? 'bg-gray-100 cursor-not-allowed' : ''}`}
                     autoFocus={isEditing}
                     required
                     minLength={2}
@@ -525,9 +584,8 @@ const getAuthToken=()=>{
                     value={userData.last}
                     onChange={handleInputChange}
                     disabled={!isEditing || isLoading}
-                    className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300 ${
-                      errors.last ? 'border-red-500' : 'border-gray-300'
-                    } ${!isEditing ? 'bg-gray-100 cursor-not-allowed' : ''}`}
+                    className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300 ${errors.last ? 'border-red-500' : 'border-gray-300'
+                      } ${!isEditing ? 'bg-gray-100 cursor-not-allowed' : ''}`}
                     required
                     minLength={1}
                     placeholder="Enter your last name"
@@ -551,9 +609,8 @@ const getAuthToken=()=>{
                     value={userData.email}
                     onChange={handleInputChange}
                     disabled={!isEditing || isLoading}
-                    className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300 ${
-                      errors.email ? 'border-red-500' : 'border-gray-300'
-                    } ${!isEditing ? 'bg-gray-100 cursor-not-allowed' : ''}`}
+                    className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300 ${errors.email ? 'border-red-500' : 'border-gray-300'
+                      } ${!isEditing ? 'bg-gray-100 cursor-not-allowed' : ''}`}
                     required
                     pattern="^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$"
                     placeholder="Enter your email"
@@ -575,9 +632,8 @@ const getAuthToken=()=>{
                     value={userData.phone}
                     onChange={handleInputChange}
                     disabled={!isEditing || isLoading}
-                    className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300 ${
-                      errors.phone ? 'border-red-500' : 'border-gray-300'
-                    } ${!isEditing ? 'bg-gray-100 cursor-not-allowed' : ''}`}
+                    className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300 ${errors.phone ? 'border-red-500' : 'border-gray-300'
+                      } ${!isEditing ? 'bg-gray-100 cursor-not-allowed' : ''}`}
                     placeholder="Enter 10-digit phone number"
                     required
                     pattern="[0-9]{10}"
@@ -615,9 +671,8 @@ const getAuthToken=()=>{
                       value={userData.currentPassword}
                       onChange={handleInputChange}
                       disabled={isLoading}
-                      className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300 pr-12 ${
-                        errors.currentPassword ? 'border-red-500' : 'border-gray-300'
-                      }`}
+                      className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300 pr-12 ${errors.currentPassword ? 'border-red-500' : 'border-gray-300'
+                        }`}
                       placeholder="Enter current password"
                     />
                     <button
@@ -647,9 +702,8 @@ const getAuthToken=()=>{
                         value={userData.newPassword}
                         onChange={handleInputChange}
                         disabled={isLoading}
-                        className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300 pr-12 ${
-                          errors.newPassword ? 'border-red-500' : 'border-gray-300'
-                        }`}
+                        className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300 pr-12 ${errors.newPassword ? 'border-red-500' : 'border-gray-300'
+                          }`}
                         placeholder="Enter new password (min 6 characters)"
                         minLength={6}
                       />
@@ -679,9 +733,8 @@ const getAuthToken=()=>{
                         value={userData.confirmPassword}
                         onChange={handleInputChange}
                         disabled={isLoading}
-                        className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300 pr-12 ${
-                          errors.confirmPassword ? 'border-red-500' : 'border-gray-300'
-                        }`}
+                        className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300 pr-12 ${errors.confirmPassword ? 'border-red-500' : 'border-gray-300'
+                          }`}
                         placeholder="Confirm new password"
                         minLength={6}
                       />
@@ -730,8 +783,10 @@ const getAuthToken=()=>{
           </form>
         </div>
       </div>
-    </div>
+    </div >
   );
 };
 
 export default ProfilePage;
+
+

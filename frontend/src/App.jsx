@@ -1,5 +1,4 @@
 // App.jsx - CLEANER VERSION
-import React, { Children } from 'react'
 import { BrowserRouter, Routes, Route, Navigate, Router } from 'react-router-dom'
 import Navbar from './components/user/Navbar'
 import Footer from './components/user/Footer'

@@ -50,20 +50,6 @@ const ProductPage = () => {
     loadWishlist();
   }, [userId]);
 
-  const checkWishlist = async () => {
-    if (!userId) return;
-
-    try {
-      const res = await axios.get(`/wishlist/single/${userId}`);
-      const exists = res.data?.data?.product?.some(
-        (item) => item.productId === product._id
-      );
-      setWishlist(exists);
-    } catch (err) {
-      console.log("Error loading wishlist:", err);
-    }
-  };
-
   // Filter states
   const [filters, setFilters] = useState({
     minPrice: "",
@@ -93,9 +79,14 @@ const ProductPage = () => {
         ...p,
         _id: p._id || p.id,
         imageurl: p.imageurl || p.image,
-        originalprice: p.originalprice || p.originalPrice
+        originalprice: p.originalprice || p.originalPrice,
+        rating: p.rating && p.rating<=5? p.rating : Math.floor(Math.random()*5) + 1,
+        views: p.views || Math.floor(Math.random() * 1000) + 10,
+        likes: p.likes || Math.floor(Math.random() * 500) + 50,
+        reviews: p.reviews || Math.floor(Math.random() * 100) + 1,
+        inStock: p.stock > 0 || true
       }))
-      console.log(data)
+      // console.log(data)
       setProducts(fixedProducts)
     }
     fetchallproduct();
@@ -189,7 +180,7 @@ const ProductPage = () => {
         quantity: quantity
 
       })
-      console.log(res.data.message)
+      //console.log(res.data.message)
 
       // Show success message
       setShowCartMessage(true);
@@ -325,6 +316,7 @@ const ProductPage = () => {
           discount: product.discount,
           originalprice: product.originalprice,
           category: product.category,
+          rating:product.rating && product.rating < 5? product.rating : Math.floor(Math.random()*5)+1,
           stock: product.stock,
           description: product.description
         }
@@ -363,7 +355,7 @@ const ProductPage = () => {
     }
   };
 
-  // Get unique categories for dropdown
+  // // Get unique categories for dropdown
   const categories = [...new Set(products.map(product => product.category).filter(Boolean))];
 
   // Show loading state

@@ -55,12 +55,13 @@ export const getsingleorder = async (req, res) => {
   try {
     const { userId } = req.params;
 
-    const orders = await orderModel.find({ userId }).sort({ createdAt: -1 }).populate("userId","first email phone");
+    const orders = await orderModel.find({ userId },"ordersummary.items ordersummary.subtotal ordersummary.saving ordersummary.totalprice ordersummary.address ordersummary.status products orderId createdAt").sort({ createdAt: -1 }).populate("userId","first email phone");
 
     return res.status(200).json({
       success: true,
-      data: orders,
-    });
+      count:orders.length,
+      data: orders
+     });
   } catch (err) {
     return res.status(500).json({ message: err.message });
   }

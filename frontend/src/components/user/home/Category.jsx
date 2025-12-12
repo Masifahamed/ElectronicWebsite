@@ -1,5 +1,5 @@
 import React from 'react'
-import phonesale from '../../../assets/phonesale.png'
+import phone from '../../../assets/phonesale.png'
 import computer from '../../../assets/Computer.png'
 import Gamepad from '../../../assets/Gamepad.png'
 import smartwatch from '../../../assets/SmartWatch.png'
@@ -24,7 +24,7 @@ const Category = () => {
   ];
 
   const categories = [
-    { name: content[1], img: phonesale,type:'image' },
+    { name: content[1], img: phone,type:'image' },
     { name: content[2], img: computer,type:'image' },
     { name: content[3], img: smartwatch,type:'image' },
     { name: content[4], img: camera ,type:'icon'},
@@ -37,7 +37,7 @@ const Category = () => {
     <section className="px-6 sm:px-10 py-10">
       {/* Header */}
       <div className="flex flex-col sm:flex-row justify-between items-center gap-5">
-        <h1 className="text-2xl sm:text-3xl md:text-4xl font-semibold bg-gradient-to-r from-[#1600A0] to-[#9B77E7] bg-clip-text text-transparent text-center sm:text-left">
+        <h1 className="text-2xl sm:text-3xl md:text-4xl font-semibold bg-gradient-to-r from-[#1600A0] to-[#9B77E7] bg-clip-text text-transparent pb-1 text-center sm:text-left">
           {content[0]}
         </h1>
    
@@ -58,7 +58,7 @@ const Category = () => {
           ):(
 
               <img key={index}
-                src={`${item.img}`}
+                src={item.img}
                 alt={item.name}
                 className="w-14 h-14 sm:w-16 sm:h-16 object-contain"
               />)

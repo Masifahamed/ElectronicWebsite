@@ -45,6 +45,7 @@ const UserSchema = new mongoose.Schema(
         profile: {
             totalorder: {
                 type: Number,
+                ref:"Orderdetails",
                 default:0
             },
             pending: {

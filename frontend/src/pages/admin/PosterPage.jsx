@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Save, Upload, Clock, Tag, Headphones } from 'lucide-react';
 import axios from 'axios';
+import { speaker } from '../../ultis/constant';
 
 const API_Poster = "http://localhost:3500/api/poster"
 
@@ -71,49 +72,96 @@ const PosterPage = () => {
   };
 
 
-  const handleSave = async () => {
-    setIsLoading(true);
+  // const handleSave = async () => {
+  //   setIsLoading(true);
 
-    try {
-      let formData;
+  //   try {
+  //     let formData;
 
-      if (imageFile) {
-        // Only include file in FormData
-        formData = new FormData();
+  //     if (imageFile) {
+  //       // Only include file in FormData
+  //       formData = new FormData();
 
-        Object.keys(heroData).forEach(key => formData.append(key, value == null ? "" : String(value)));
-        formData.append('imageFile', imageFile);
+  //       Object.keys(heroData).forEach(key => formData.append(key, heroData[key] == null ? "" : String(heroData[key])));
+  //       formData.append('imageFile', imageFile);
 
-        await axios.put(`${API_Poster}/update`, formData, {
-          headers: { 'Content-Type': 'multipart/form-data' }
-        });
-      } else {
-        // Update only text & URL
-        await axios.put(`${API_Poster}/update`, heroData);
-      }
+  //       await axios.put(`${API_Poster}/update`, formData, {
+  //         headers: { 'Content-Type': 'multipart/form-data' }
+  //       });
+  //     } else {
+  //       // Update only text & URL
+  //       await axios.put(`${API_Poster}/update`, heroData);
+  //     }
 
-      // Reload backend data for preview
-      const refreshed = await axios.get(`${API_Poster}/`);
-      if (refreshed.data.success && refreshed.data.data) {
-        setHeroData(refreshed.data.data);
+  //     // Reload backend data for preview
+  //     const refreshed = await axios.get(`${API_Poster}/`);
+  //     if (refreshed.data.success && refreshed.data.data) {
+  //       setHeroData(refreshed.data.data);
 
-        if (refreshed.data.data.imageurl) {
-          setPreviewUrl(`http://localhost:3500${refreshed.data.data.imageurl}`);
-        }                                                        // Update preview from backend
-        setImageFile(null); // Reset file
-      }
+  //       if (refreshed.data.data.imageurl) {
+  //         setPreviewUrl(`http://localhost:3500${refreshed.data.data.imageurl}`);
+  //       }                                                        // Update preview from backend
+  //       setImageFile(null); // Reset file
+  //     }
 
-      setMessage("Poster updated successfully!");
-      setTimeout(() => setMessage(""), 3000);
+  //     setMessage("Poster updated successfully!");
+  //     setTimeout(() => setMessage(""), 3000);
 
-    } catch (error) {
-      console.log("Save error:", error);
-      setMessage("Error while saving poster!");
-    } finally {
-      setIsLoading(false);
+  //   } catch (error) {
+  //     console.log("Save error:", error);
+  //     setMessage("Error while saving poster!");
+  //   } finally {
+  //     setIsLoading(false);
+  //   }
+  // };
+
+const handleSave = async () => {
+  setIsLoading(true);
+  try {
+
+    if (imageFile) {
+      // If user uploaded a file → call file upload function
+      await uploadImageFile();
+    } else {
+      // If user updates only text or image URL
+      await updateImageUrl();
     }
-  };
 
+    // Refresh latest data from backend
+    const refreshed = await axios.get(`${API_Poster}/`);
+    if (refreshed.data.success && refreshed.data.data) {
+      setHeroData(refreshed.data.data);
+
+      if (refreshed.data.data.imageurl) {
+        setPreviewUrl(`http://localhost:3500${refreshed.data.data.imageurl}`);
+      }
+    }
+
+    setImageFile(null);
+    setMessage("Poster updated successfully!");
+    setTimeout(() => setMessage(""), 3000);
+
+  } catch (err) {
+    console.log("Save error:", err);
+    setMessage("Error while saving poster!");
+  } finally {
+    setIsLoading(false);
+  }
+};
+
+const uploadImageFile = async () => {
+  const formData = new FormData();
+
+  Object.keys(heroData).forEach(key =>
+    formData.append(key, heroData[key] == null ? "" : String(heroData[key]))
+  );
+
+  formData.append("imageFile", imageFile);
+
+  await axios.put(`${API_Poster}/update`, formData, {
+    headers: { "Content-Type": "multipart/form-data" },
+  });
+};
 
 
   const resetToDefault = () => {
@@ -292,7 +340,7 @@ const PosterPage = () => {
                 <input
                   type="file"
                   accept="image/*"
-                  onChange={handleImageUpload}
+                  onChange={handleImageUpload||speaker}
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
               </div>

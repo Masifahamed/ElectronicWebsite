@@ -1,10 +1,9 @@
-import React, { useId } from 'react'
 import { useState, useEffect, useRef } from 'react';
 import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
 import { X, CheckCircle, ShoppingCart, Eye, Star, Heart, Share2, LoaderIcon } from 'lucide-react';
 import axios from 'axios';
-
+import SuccessPopup from './../SuccessPopup'
 const API_CART = "http://localhost:3500/api/cart"
 const API_HERO = "http://localhost:3500/api/hero"
 
@@ -16,25 +15,16 @@ const Herosection = () => {
     const [slides, setSlides] = useState([]); // Dynamic slides state
     const [showProductPopup, setShowProductPopup] = useState(false);
     const [selectedProduct, setSelectedProduct] = useState(null);
-    const [popupMessage, setPopupMessage] = useState({ show: false, message: '', type: '' });
+    const [popupMessage, setPopupMessage] = useState("");
+    const [showPopup, setShowPopup] = useState(false)
     const autoPlayRef = useRef(null);
     const navigate = useNavigate();
-    //const location = useLocation()
     const [isOpen, setIsOpen] = useState(true)
 
 
 
     const user = JSON.parse(localStorage.getItem('auth_user'));
     const userId = user?._id
-
-    useEffect(() => {
-        if (popupMessage.show) {
-            const timer = setTimeout(() => {
-                setPopupMessage({ show: false, message: '', type: '' });
-            }, 3000);
-            return () => clearTimeout(timer);
-        }
-    }, [popupMessage.show]);
 
     const handleStorageChange = () => {
         const updatedUser = JSON.parse(localStorage.getItem("auth_user"))
@@ -53,9 +43,9 @@ const Herosection = () => {
     const staticSlides = [
         {
             _id: 4,
-            name: "LAPTOP FOR THE FUTURE",
+            productname: "LAPTOP FOR THE FUTURE",
             description: "The new 18-inch bezel-less display offering a 4K resolution with smart screen features.",
-            image: "https://images.unsplash.com/photo-1496181133206-80ce9b88a853?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80",
+            imageurl: "https://images.unsplash.com/photo-1496181133206-80ce9b88a853?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80",
             price: 1299.99,
             discount: 20,
             rating: 4,
@@ -67,9 +57,9 @@ const Herosection = () => {
         },
         {
             _id: 5,
-            name: "ULTRA-SLIM DESIGN",
+            productname: "ULTRA-SLIM DESIGN",
             description: "Experience unparalleled performance with our thinnest and lightest laptop yet.",
-            image: "https://images.unsplash.com/photo-1511385348-a52b4a160dc2?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80",
+            imageurl: "https://images.unsplash.com/photo-1511385348-a52b4a160dc2?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80",
             price: 1499.99,
             discount: 26,
             rating: 4,
@@ -81,9 +71,9 @@ const Herosection = () => {
         },
         {
             _id: 6,
-            name: "POWERFUL PERFORMANCE",
+            productname: "POWERFUL PERFORMANCE",
             description: "Next-gen processors and advanced cooling system for seamless multitasking.",
-            image: "https://images.unsplash.com/photo-1541807084-5c52b6b3adef?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80",
+            imageurl: "https://images.unsplash.com/photo-1541807084-5c52b6b3adef?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80",
             price: 1799.99,
             discount: 10,
             rating: 4,
@@ -104,7 +94,7 @@ const Herosection = () => {
                 const heroproduct = res.data.data
                 const enhancedProducts = heroproduct.map(product => ({
                     ...product,
-                    rating: product.rating || 4.5,
+                    rating: product.rating || Math.floor(Math.random() * 5) + 1,
                     views: product.views || Math.floor(Math.random() * 1000) + 100,
                     likes: product.likes || Math.floor(Math.random() * 500) + 50,
                     reviews: product.reviews || Math.floor(Math.random() * 100) + 1,
@@ -154,11 +144,14 @@ const Herosection = () => {
                 originalprice: product.originalprice,
                 category: product.category,
             });
-            setPopupMessage({ show: true, message: "successfully add to cart", type: "success" })
+            setPopupMessage(`${product.productname} added successfully`)
+            setShowPopup(true)
             // Show popup notification
-            alert("add to cart")
+            //alert("add to cart")
             console.log("added successfully")
-            selectedProduct(existingCart)
+            setTimeout(() => {
+                setShowPopup(false)
+            }, 2000);
         } catch (err) {
             console.log(err)
         }
@@ -234,7 +227,7 @@ const Herosection = () => {
     const nextSlide = () => {
         if (slides.length > 0) {
             setCurrentSlide((prev) => (prev + 1) % slides.length);
-            resetAutoPlay();
+            //resetAutoPlay();
         }
     };
 
@@ -439,8 +432,8 @@ const Herosection = () => {
                                             {/* Product Image */}
                                             <div className="relative">
                                                 <img
-                                                    src={selectedProduct.imageurl || selectedProduct.image}
-                                                    alt={selectedProduct.productname || selectedProduct.name}
+                                                    src={selectedProduct.imageurl}
+                                                    alt={selectedProduct.productname}
                                                     className="w-full h-64 md:h-80 object-cover rounded-lg"
                                                 />
                                                 {selectedProduct.discount > 0 && (
@@ -453,7 +446,7 @@ const Herosection = () => {
                                             {/* Product Details */}
                                             <div className="space-y-4">
                                                 <div>
-                                                    <h2 className="text-2xl font-bold text-gray-800">{selectedProduct.productname || selectedProduct.name}</h2>
+                                                    <h2 className="text-2xl font-bold text-gray-800">{selectedProduct.productname}</h2>
                                                     <p className="text-gray-600 mt-2">{selectedProduct.description}</p>
                                                 </div>
 
@@ -463,7 +456,7 @@ const Herosection = () => {
                                                     </span>
                                                     {selectedProduct.originalprice && selectedProduct.originalprice > selectedProduct.price && (
                                                         <span className="text-xl text-gray-500 line-through">
-                                                            ₹{selectedProduct.originalprice || selectedProduct.originalPrice}
+                                                            ₹{selectedProduct.originalprice}
                                                         </span>
                                                     )}
                                                 </div>
@@ -475,7 +468,7 @@ const Herosection = () => {
                                                             <Star
                                                                 key={i}
                                                                 size={16}
-                                                                className={i < Math.floor(selectedProduct.rating)
+                                                                className={i < selectedProduct.rating
                                                                     ? "text-yellow-400 fill-current"
                                                                     : "text-gray-300"
                                                                 }
@@ -618,6 +611,11 @@ const Herosection = () => {
                                 <span className="text-gray-300"> / {slides.length}</span>
                             </div>
                         </div>
+
+                        {showPopup && (
+                            <SuccessPopup title={popupMessage} bgcolor="success" />
+                        )
+                        }
 
                         {/* Thumbnail Previews */}
                         <div className="flex space-x-4 mt-6 justify-center">

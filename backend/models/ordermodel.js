@@ -94,22 +94,6 @@ const orderSchema = new mongoose.Schema({
             required: [true, "Enter your address"],
             trim: true // Remove extra spaces
         }
-    },
-    paymentInfo: {
-        razorpay_order_id: {
-            type: String
-        },
-        razorpay_payment_id: {
-            type: String
-        },
-        razorpay_signature: {
-            type: String
-        },
-        status: {
-            type: String,
-            enum:["pending","paid","failed"],
-            default: "pending"
-        }
     }
 
     // Consider adding user reference

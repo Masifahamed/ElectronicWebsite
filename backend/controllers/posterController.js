@@ -12,7 +12,8 @@ export const addPoster = async (req, res) => {
     }
 
     const newPoster = new Postermodel({
-      ...req.body,
+      category: req.body.category,
+      title: req.body.title,
       originalprice: String(req.body.originalprice),
       productname: String(req.body.productname),
       price: Number(req.body.price),
@@ -20,7 +21,7 @@ export const addPoster = async (req, res) => {
       hours: Number(req.body.hours),
       minutes: Number(req.body.minutes),
       seconds: Number(req.body.seconds),
-      imageurl,
+      imageurl: imageurl,
     });
 
     const savedPoster = await newPoster.save();
@@ -48,14 +49,19 @@ export const updateHeroData = async (req, res) => {
     if (!poster) {
       return res.status(404).json({ success: false, message: "Poster not found" });
     }
-
+    if (req.file) {
+      poster.imageurl = `/upload/hero-images/${req.file.filename}`
+    }
+    else if(req.body.imageurl){
+      poster.imageurl=req.body.imageurl;
+    }
     // Update text fields
     Object.assign(poster, {
       category: req.body.category ?? poster.category,
       title: req.body.title ?? poster.title,
       productname: req.body.productname ?? poster.productname,
       price: req.body.price ? Number(req.body.price) : poster.price,
-      originalprice:req.body.originalprice? Number(req.body.originalprice):poster.originalprice,
+      originalprice: req.body.originalprice ? Number(req.body.originalprice) : poster.originalprice,
       days: req.body.days ? Number(req.body.days) : poster.days,
       hours: req.body.hours ? Number(req.body.hours) : poster.hours,
       minutes: req.body.minutes ? Number(req.body.minutes) : poster.minutes,
@@ -69,10 +75,6 @@ export const updateHeroData = async (req, res) => {
       buttonTextColor: req.body.buttonTextColor ?? poster.buttonTextColor,
     });
 
-    // Handle new image
-    if (req.file) {
-      poster.imageurl = `/uploads/hero-images/${req.file.filename}`;
-    }
 
     const updated = await poster.save();
     res.json({ success: true, data: updated });

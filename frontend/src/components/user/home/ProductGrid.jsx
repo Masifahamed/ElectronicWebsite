@@ -1,4 +1,4 @@
-import { useRef, useState, useEffect } from 'react';
+import { useRef, useState, useEffect, useCallback } from 'react';
 //import { products } from '../../../ultis/constant';
 import { Heart, Eye, ShoppingCart, X } from 'lucide-react';
 import { useAuth } from '../../../pages/auth/WithAuth';
@@ -18,57 +18,197 @@ const ProductGrid = () => {
     const [quantity, setQuantity] = useState(1)
     const [showCartMessage, setShowCartMessage] = useState(false)
     const navigate = useNavigate()
-    const [slides, setSlides] = useState([])
     const [todaysale, setTodaysale] = useState([])
-    const [wishlist, setWishlist] = useState([]);
     const [cart, setCart] = useState([]);
     const [likedProducts, setLikedProducts] = useState({});
-    const user = JSON.parse(localStorage.getItem("auth_user"))
-    const userId = user?._id
     const [successmessage, setsuccessmessage] = useState('')
     const [showpopup, setShowpopup] = useState(false)
+    const user = JSON.parse(localStorage.getItem("auth_user"))
+    const userId = user?._id
 
-    const fetchtodayproduct = async () => {
+
+    const loadWishlist = useCallback(async () => {
+        if (!userId) return;
         try {
-            const res = await axios.get(`${API_BASE}/product`)
-            const today = res.data.data
-            const saleproduct = today.map(p => ({
-                ...p,
-                rating: p.rating || 3.5,
-                views: p.views || Math.floor(Math.round() * 1000) + 10,
-                likes: p.likes || Math.floor(Math.random() * 500) + 50,
-                reviews: p.reviews || Math.floor(Math.random() * 100) + 1,
-                inStock: p.stock > 0 || true
-            }))
-            setTodaysale(saleproduct.slice(0, 6))
-            return
+            const res = await fetch(`${API_BASE}/wishlist/single/${userId}`);
+            const data = await res.json();
+
+            const liked = {};
+
+            if (data?.data?.product) {
+                data.data.product.forEach(item => {
+                    liked[item.productId] = true;   // mark product as liked
+                });
+            }
+
+            setLikedProducts(liked);
         } catch (err) {
-            console.log(err)
-
+            console.log("Wishlist fetch error:", err);
         }
-    }
-    useEffect(() => {
-        fetchtodayproduct()
-    }, [userId])
+    }, [userId]);
 
+
+    useEffect(() => {
+        loadWishlist();
+    }, [loadWishlist]);
+
+    // useEffect(() => {
+    //     fetchtodayproduct()
+    // }, [userId])
+
+    useEffect(() => {
+        const fetchtodayproduct = async () => {
+            try {
+                const res = await axios.get(`${API_BASE}/product`)
+                const today = res.data.data
+                const saleproduct = today.map(p => ({
+                    ...p,
+                    _id: p._id || p.id,
+                    imageurl: p.imageurl,
+                    originalprice: p.originalprice,
+                    rating: p.rating && p.rating <= 5 ? p.rating : Math.floor(Math.random() * 5) + 1,
+                    views: p.views || Math.floor(Math.random() * 1000) + 10,
+                    likes: p.likes || Math.floor(Math.random() * 500) + 50,
+                    reviews: p.reviews || Math.floor(Math.random() * 100) + 1,
+                    inStock: p.stock > 0 || true
+
+                }))
+                setTodaysale(saleproduct.slice(0, 6))
+            } catch (err) {
+                console.log(err)
+
+            }
+        }
+        fetchtodayproduct()
+    }, [])
 
     const handleProductClick = (item) => {
-        // if (!isAuthenticated) {
-        //     requireAuth()
-        //     return
-        // }
-        setSelectedProduct(item)
 
-        const cartitem = cart.find((item) => item.productId === product._id)
+        setSelectedProduct(item)
+        setShowProductPopup(true)
+        const cartitem = cart.find((cartitem) => cartitem.productId === item._id)
         if (cartitem) {
             setQuantity(cartitem.quantity)
         } else {
             setQuantity(1)
         }
-        setShowProductPopup(true)
+
     }
 
     const scrollContainerRef = useRef(null);
+
+    const toggleLike = useCallback(async (item, e) => {
+
+        if (e) e.stopPropagation();  // stop card click
+
+
+        if (!userId) {
+            setsuccessmessage("Please login to use wishlist");
+            setShowpopup(true);
+            setTimeout(() => setShowpopup(false), 2000);
+            return;
+        }
+        try {
+            const productId = item._id;
+            const isLiked = likedProducts[productId];
+
+            if (!isLiked) {
+                await axios.post(
+                    `${API_BASE}/wishlist/add`, {
+                    userId,
+                    productId,
+                    imageurl: item.imageurl,
+                    productname: item.productname,
+                    price: item.price,
+                    discount: item.discount,
+                    originalprice: item.originalprice,
+                    category: item.category,
+                    rating: item.rating && item.rating < 5 ? item.rating : Math.floor(Math.random() * 5) + 1,
+                    stock: item.stock,
+                    description: item.description
+                }
+                );
+
+                // update UI
+                setLikedProducts(prev => ({
+                    ...prev,
+                    [productId]: true
+                }));
+                setsuccessmessage("Added to wishlist")
+                loadWishlist()
+            } else {
+
+                await axios.delete(`${API_BASE}/wishlist/remove/${userId}/${productId}`);
+
+
+                // update UI
+                setLikedProducts(prev => {
+                    const newState = { ...prev };
+                    delete newState[productId];
+                    return newState;
+
+                });
+                setsuccessmessage("Remove from wishlist")
+                loadWishlist()
+            }
+            setShowpopup(true);
+            setTimeout(() => setShowpopup(false), 2000);
+        } catch (err) {
+            console.log("Wishlist error:", err);
+            setsuccessmessage("Wishlist error");
+            setShowpopup(true);
+            setTimeout(() => setShowpopup(false), 2000);
+
+        }
+    }, [userId, likedProducts, loadWishlist]);
+
+
+    const addToCart = async (item) => {
+        try {
+
+            if (!userId) {
+                requireAuth();
+                return
+            }
+            // 2️⃣ Prepare payload EXACTLY as backend expects
+            const payload = {
+                userId: userId,
+                productId: item._id,
+                productname: item.productname,
+                price: item.price,
+                discount: item.discount,
+                originalprice: item.originalprice,
+                rating: item.rating,
+                category: item.category,
+                imageurl: item.imageurl,
+                quantity:quantity  // selected quantity
+            };
+            const res = await axios.post("http://localhost:3500/api/cart/add", payload)
+            console.log(res.data.message)
+            setShowCartMessage(true)
+            setShowProductPopup(false)
+            setTimeout(() => {
+                setShowCartMessage(false)
+            }, 3000);
+        } catch (err) {
+            console.log(err)
+
+        }
+        //Authentication is here
+    };
+    // Load cart
+    const loadCart = async () => {
+        if (!userId) return
+        try {
+            const savedCart = await axios.get(`${API_BASE}/cart/single/${userId}`);
+            setCart(savedCart.data.data.cartlist)
+        } catch (error) {
+            console.error('Error loading cart:', error);
+        }
+    }
+    useEffect(() => {
+        loadCart()
+    }, [userId])
 
     const increaseQuantity = async (productId) => {
         const newqty = quantity + 1
@@ -94,138 +234,7 @@ const ProductGrid = () => {
         loadCart()
         //setQuantity(prev => prev > 1 ? prev - 1 : 1);
     };
-    // Initialize state from localStorage after component mounts
-    const loadWishlist = async () => {
-        // Load wishlist
-        try {
-            const savedWishlist = await axios.get(`${API_BASE}/wishlist/single/${userId}`);
-            const liked = {}
-            if (savedWishlist?.data?.product) {
-                savedWishlist.data.product.forEach(item => {
-                    liked[item.productId] = true
-                })
-            }
-            setLikedProducts(liked)
-        } catch (error) {
-            console.error('Error loading wishlist:', error);
 
-        }
-    }
-
-    useEffect(() => {
-        loadWishlist()
-    }, [userId])
-
-    // Load cart
-    const loadCart = async () => {
-        try {
-            const savedCart = await axios.get(`${API_BASE}/cart/single/${userId}`);
-
-            setCart(savedCart.data.cartlist)
-        } catch (error) {
-            console.error('Error loading cart:', error);
-        }
-    }
-
-    useEffect(() => {
-        loadCart()
-    }, [userId])
-
-    const toggleLike = async (item) => {
-        //e.stopPropagation();  // stop card click
-
-
-        if (!userId) {
-            setsuccessmessage("Please login to use wishlist");
-            setShowpopup(true);
-            setTimeout(() => setShowpopup(false), 2000);
-            return;
-        }
-        try {
-            const productId = item._id;
-            const isLiked = likedProducts[productId];
-
-            if (!isLiked) {
-                await axios.post(
-                    `${API_BASE}/wishlist/add`, {
-                    userId,
-                    productId,
-                    imageurl: item.imageurl,
-                    productname: item.productname,
-                    price: item.price,
-                    discount: item.discount,
-                    originalprice: item.originalprice,
-                    category: item.category,
-                    stock: item.stock,
-                    description: item.description
-                }
-                );
-
-                // update UI
-                setLikedProducts(prev => ({
-                    ...prev,
-                    [productId]: true
-                }));
-                setsuccessmessage("Added to wishlist")
-            } else {
-
-                await axios.delete(`${API_BASE}/wishlist/remove/${userId}/${productId}`);
-
-                setsuccessmessage("remove from wishlist")
-                // update UI
-                setLikedProducts(prev => {
-                    const newState = { ...prev };
-                    delete newState[productId];
-                    return newState;
-
-                });
-
-
-            }
-            setShowpopup(true);
-            setTimeout(() => setShowpopup(false), 2000);
-        } catch (err) {
-            console.log("Wishlist error:", err);
-            setsuccessmessage("Wishlist error");
-            setShowpopup(true);
-            setTimeout(() => setShowpopup(false), 2000);
-        }
-    };
-
-
-    const addToCart = async (item) => {
-        try {
-
-            if (!userId) {
-                requireAuth();
-                return
-            }
-            // 2️⃣ Prepare payload EXACTLY as backend expects
-            const payload = {
-                userId: userId,
-                productId: item_id,
-                productname: item.productname,
-                price: item.price,
-                discount: item.discount,
-                category: item.category,
-                imageurl: item.imageurl,
-                quantity: quantity,   // selected quantity
-            };
-            const res = await axios.post("http://localhost:3500/api/cart/add", payload)
-            console.log(res.data.message)
-            setShowCartMessage(true)
-            setShowProductPopup(false)
-            setTimeout(() => {
-                setShowCartMessage(false)
-            }, 3000);
-
-
-        } catch (err) {
-            console.log(err)
-
-        }
-        //Authentication is here
-    };
 
     const scrollLeft = () => {
         if (scrollContainerRef.current) {
@@ -273,7 +282,7 @@ const ProductGrid = () => {
                         <div
                             key={item._id}
                             className="flex-none w-80 bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 cursor-pointer"
-                            onClick={() => handleProductClick(product)}
+                            onClick={() => handleProductClick(item)}
                         >
                             {/* Product Image */}
                             <div className="relative">
@@ -290,10 +299,10 @@ const ProductGrid = () => {
                                 <button
                                     onClick={(e) => {
                                         e.stopPropagation(); // Prevent triggering product click
-                                        toggleLike(item);
+                                        toggleLike(item, e)
                                     }}
                                     className="absolute top-4 right-4 w-10 h-10 bg-white/80 backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-white transition-all duration-300"
-                                    aria-label={likedProducts[item._id] ? "Remove from wishlist" : "Add to wishlist"}
+                                // aria-label={likedProducts[item._id] ? "Remove from wishlist" : "Add to wishlist"}
                                 >
                                     <Heart
                                         className={`w-5 h-5 ${likedProducts[item._id]
@@ -337,7 +346,7 @@ const ProductGrid = () => {
                                         ₹{item.price}
                                     </span>
                                     <span className="text-lg text-gray-500 line-through ml-2">
-                                        ₹{item.originalPrice}
+                                        ₹{item.originalprice}
                                     </span>
                                 </div>
 
@@ -381,7 +390,7 @@ const ProductGrid = () => {
                             animate={{ opacity: 1 }}
                             exit={{ opacity: 0 }}
                             className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50"
-                            onClick={() => setShowProductPopup(selectedProduct)}
+                            onClick={() => setShowProductPopup(false)}
                         >
                             <motion.div
                                 initial={{ scale: 0.9, opacity: 0 }}
@@ -394,7 +403,7 @@ const ProductGrid = () => {
 
                                     <div className='flex gap-8 p-6'>
                                         <div className='relative'>
-                                            <img src={selectedProduct.imageurl} alt={selectedProduct.productname || selectedProduct.name}
+                                            <img src={selectedProduct.imageurl} alt={selectedProduct.productname}
                                                 className='w-500 h-96 object-cover rounded-2xl'
                                             />
                                             <div className='absolute top-4 m-3 bg-red-500 text-white px-3 py-1 rounded-full text-sm font-semibold'>
@@ -406,7 +415,7 @@ const ProductGrid = () => {
                                         <div className='space-y-6 w-full'>
                                             <div className='relative flex-col items-center justify-between'>
                                                 <h2 className='text-3xl font-bold text-gray-800 mb-2'>
-                                                    {selectedProduct.productname || selectedProduct.name}
+                                                    {selectedProduct.productname}
                                                 </h2>
                                                 <p className='text-gray-600 mb-4'>
                                                     {selectedProduct.description || "Premium quality product with excellent features and performance."}
@@ -483,7 +492,7 @@ const ProductGrid = () => {
                                                 <span className="font-semibold">Category:</span> {selectedProduct.category || "Electronics"}
                                             </div>
                                             <div>
-                                                <span className="font-semibold">Views:</span> {selectedProduct.views}
+                                                <span className="font-semibold">Views:</span> {selectedProduct.reviews}
                                             </div>
                                             <div>
                                                 <span className="font-semibold">Likes:</span> {selectedProduct.likes}
@@ -493,9 +502,9 @@ const ProductGrid = () => {
                                             </div>
                                         </div>
                                     </div>
-                                    {/* <button onClick={() => setShowProductPopup(false)} className='absolute top-5 right-5 w-10 h-10 bg-gray-200 rounded-full flex items-center cursor-pointer justify-center hover:bg-gray-300 transition-all duration-300'>
+                                    <button onClick={() => setShowProductPopup(false)} className='absolute top-5 right-5 w-10 h-10 bg-gray-200 rounded-full flex items-center cursor-pointer justify-center hover:bg-gray-300 transition-all duration-300'>
                                         <X className='w-20 h-20 text-gray-600' />
-                                    </button> */}
+                                    </button>
                                 </div>
                             </motion.div>
 

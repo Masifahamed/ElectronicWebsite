@@ -1,0 +1,10 @@
+🧠 Memory Trick:
+Remember U-E-C:
+
+U - useEffect = Alarm clock
+
+E - () = What to do
+
+C - [userId] = When to do it (Condition)
+
+"Use Effect when Condition changes!" 🎉
