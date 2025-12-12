@@ -32,8 +32,8 @@ const handleChange = (e) => {
       );
       // Backend Response
       const { token, user, message } = res.data;
-      console.log(user,"good masif ahamed jknfsjfns kjncjscsjjbcs")
-      console.log(token)
+      //console.log(user,"good masif ahamed jknfsjfns kjncjscsjjbcs")
+      //console.log(token)
       // Save login details
       localStorage.setItem("auth_token", token);
       localStorage.setItem("auth_user", JSON.stringify(user));

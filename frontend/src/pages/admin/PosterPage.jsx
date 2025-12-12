@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { Save, Upload, Clock, Tag, Headphones } from 'lucide-react';
+import { Save, Upload, Clock, Tag, Headphones, Speaker } from 'lucide-react';
 import axios from 'axios';
-import { speaker } from '../../ultis/constant';
-
+//import { speaker } from '../../ultis/constant';
+import speaker from '../../assets/speaker.png';
 const API_Poster = "http://localhost:3500/api/poster"
 
 const PosterPage = () => {
@@ -17,7 +17,7 @@ const PosterPage = () => {
     minutes: 34,
     seconds: 56,
     buttonText: 'Buy Now',
-    imageurl: '',
+    imageurl: speaker,
     backgroundColor: '#000000',
     textColor: '#FAFAFA',
     accentColor: '#FAFAFA',
@@ -72,96 +72,54 @@ const PosterPage = () => {
   };
 
 
-  // const handleSave = async () => {
-  //   setIsLoading(true);
+  const handleSave = async () => {
+    setIsLoading(true);
 
-  //   try {
-  //     let formData;
+    try {
+      if (imageFile) {
+        // Only include file in FormData
+        const formData = new FormData();
 
-  //     if (imageFile) {
-  //       // Only include file in FormData
-  //       formData = new FormData();
-
-  //       Object.keys(heroData).forEach(key => formData.append(key, heroData[key] == null ? "" : String(heroData[key])));
-  //       formData.append('imageFile', imageFile);
-
-  //       await axios.put(`${API_Poster}/update`, formData, {
-  //         headers: { 'Content-Type': 'multipart/form-data' }
-  //       });
-  //     } else {
-  //       // Update only text & URL
-  //       await axios.put(`${API_Poster}/update`, heroData);
-  //     }
-
-  //     // Reload backend data for preview
-  //     const refreshed = await axios.get(`${API_Poster}/`);
-  //     if (refreshed.data.success && refreshed.data.data) {
-  //       setHeroData(refreshed.data.data);
-
-  //       if (refreshed.data.data.imageurl) {
-  //         setPreviewUrl(`http://localhost:3500${refreshed.data.data.imageurl}`);
-  //       }                                                        // Update preview from backend
-  //       setImageFile(null); // Reset file
-  //     }
-
-  //     setMessage("Poster updated successfully!");
-  //     setTimeout(() => setMessage(""), 3000);
-
-  //   } catch (error) {
-  //     console.log("Save error:", error);
-  //     setMessage("Error while saving poster!");
-  //   } finally {
-  //     setIsLoading(false);
-  //   }
-  // };
-
-const handleSave = async () => {
-  setIsLoading(true);
-  try {
-
-    if (imageFile) {
-      // If user uploaded a file → call file upload function
-      await uploadImageFile();
-    } else {
-      // If user updates only text or image URL
-      await updateImageUrl();
-    }
-
-    // Refresh latest data from backend
-    const refreshed = await axios.get(`${API_Poster}/`);
-    if (refreshed.data.success && refreshed.data.data) {
-      setHeroData(refreshed.data.data);
-
-      if (refreshed.data.data.imageurl) {
-        setPreviewUrl(`http://localhost:3500${refreshed.data.data.imageurl}`);
+        // Object.keys(heroData).forEach(key => formData.append(key, heroData[key] == null ? "" : String(heroData[key])));
+        // formData.append('imageFile', imageFile);
+        Object.keys(heroData).forEach(key => {
+          if (key !== "imageurl") {
+            formData.append(key, heroData[key] ?? "")
+          }
+        })
+        formData.append("imageFile", imageFile)
+        if (heroData._id) {
+          await axios.put(`${API_Poster}/update`, formData)
+        } else {
+          await axios.post(`${API_Poster}/add`, formData)
+        }
+      } else {
+        // Update only text & URL
+        await axios.put(`${API_Poster}/update`, heroData);
       }
+
+      // Reload backend data for preview
+      const refreshed = await axios.get(`${API_Poster}/`);
+      if (refreshed.data.success) {
+        setHeroData(refreshed.data.data);
+
+
+        setPreviewUrl(`http://localhost:3500${refreshed.data.data.imageurl}`);
+        // Update preview from backend
+        //setImageFile(null); // Reset file
+      }
+
+      setMessage("Poster updated successfully!");
+      setTimeout(() => setMessage(""), 3000);
+
+    } catch (error) {
+      console.log("Save error:", error);
+      setMessage("Error while saving poster!");
+    } finally {
+      setIsLoading(false);
     }
+  };
 
-    setImageFile(null);
-    setMessage("Poster updated successfully!");
-    setTimeout(() => setMessage(""), 3000);
-
-  } catch (err) {
-    console.log("Save error:", err);
-    setMessage("Error while saving poster!");
-  } finally {
-    setIsLoading(false);
-  }
-};
-
-const uploadImageFile = async () => {
-  const formData = new FormData();
-
-  Object.keys(heroData).forEach(key =>
-    formData.append(key, heroData[key] == null ? "" : String(heroData[key]))
-  );
-
-  formData.append("imageFile", imageFile);
-
-  await axios.put(`${API_Poster}/update`, formData, {
-    headers: { "Content-Type": "multipart/form-data" },
-  });
-};
 
 
   const resetToDefault = () => {
@@ -176,7 +134,7 @@ const uploadImageFile = async () => {
       minutes: 34,
       seconds: 56,
       buttonText: 'Buy Now',
-      imageurl: '',
+      imageurl: speaker,
       backgroundColor: '#000000',
       textColor: '#FAFAFA',
       accentColor: '#FAFAFA',
@@ -257,7 +215,7 @@ const uploadImageFile = async () => {
                 </label>
                 <input
                   name="originalprice"
-                  value={heroData.originalprice??0}
+                  value={heroData.originalprice ?? 0}
                   onChange={handleInputChange}
                   rows="3"
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -340,7 +298,7 @@ const uploadImageFile = async () => {
                 <input
                   type="file"
                   accept="image/*"
-                  onChange={handleImageUpload||speaker}
+                  onChange={handleImageUpload}
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
               </div>
@@ -548,3 +506,329 @@ const uploadImageFile = async () => {
 };
 
 export default PosterPage;
+
+// import React, { useEffect, useState } from "react";
+// import { Save, Upload, Clock, Tag, Headphones } from "lucide-react";
+// import axios from "axios";
+// import speaker from "../../assets/speaker.png";
+
+// const API_Poster = "http://localhost:3500/api/poster";
+
+// const emptyPoster = {
+//   category: "Categories",
+//   title: "Enhance Your Music Experience",
+//   productname: "Speaker",
+//   originalprice: 4500,
+//   price: 4000,
+//   days: 1,
+//   hours: 12,
+//   minutes: 34,
+//   seconds: 56,
+//   buttonText: "Buy Now",
+//   imageurl: "",
+//   backgroundColor: "#000000",
+//   textColor: "#FAFAFA",
+//   accentColor: "#FAFAFA",
+//   categoryTextColor: "#00FF66",
+//   buttonColor: "#00FF66",
+//   buttonTextColor: "#000000",
+//   isTrending: false,
+// };
+
+// const PosterPage = () => {
+//   const [posters, setPosters] = useState([]);
+//   const [editingPoster, setEditingPoster] = useState(null); // object when editing or null for new
+//   const [formDataState, setFormDataState] = useState(emptyPoster);
+//   const [imageFile, setImageFile] = useState(null);
+//   const [previewUrl, setPreviewUrl] = useState("");
+//   const [isLoading, setIsLoading] = useState(false);
+//   const [message, setMessage] = useState("");
+
+//   // load posters
+//   const fetchPosters = async () => {
+//     try {
+//       const res = await axios.get(`${API_Poster}/`);
+//       if (res.data.success) {
+//         setPosters(res.data.data || []);
+//       }
+//     } catch (err) {
+//       console.error("Fetch posters err", err);
+//     }
+//   };
+
+//   useEffect(() => {
+//     fetchPosters();
+//   }, []);
+
+//   // when selecting poster to edit or adding new
+//   const openNewPoster = () => {
+//     setEditingPoster(null);
+//     setFormDataState(emptyPoster);
+//     setImageFile(null);
+//     setPreviewUrl("");
+//   };
+
+//   const openEditPoster = (poster) => {
+//     setEditingPoster(poster);
+//     // map DB poster into form state
+//     setFormDataState({
+//       ...poster,
+//       imageurl: poster.imageurl || ""
+//     });
+//     setPreviewUrl(poster.imageurl ? formatPreviewUrl(poster.imageurl) : "");
+//     setImageFile(null);
+//   };
+
+//   const formatPreviewUrl = (url) => {
+//     if (!url) return "";
+//     if (url.startsWith("http") || url.startsWith("data:")) return url;
+//     return url.startsWith("/") ? `http://localhost:3500${url}` : `http://localhost:3500/${url}`;
+//   };
+
+//   const handleInputChange = (e) => {
+//     const { name, value, type, checked } = e.target;
+//     const val = type === "checkbox" ? checked : value;
+//     setFormDataState(prev => ({ ...prev, [name]: val }));
+//   };
+
+//   const handleImageUpload = (e) => {
+//     const file = e.target.files?.[0];
+//     if (!file) return;
+//     setImageFile(file);
+//     const reader = new FileReader();
+//     reader.onloadend = () => setPreviewUrl(reader.result);
+//     reader.readAsDataURL(file);
+//   };
+
+//   // Save (create or update)
+//   const handleSave = async () => {
+//     setIsLoading(true);
+//     try {
+//       // prepare payload
+//       if (imageFile) {
+//         const fd = new FormData();
+//         // append all text fields
+//         Object.keys(formDataState).forEach(key => {
+//           if (key !== "imageurl") fd.append(key, formDataState[key] ?? "");
+//         });
+//         fd.append("imageFile", imageFile);
+//         fd.append("isTrending", formDataState.isTrending ?? false);
+
+//         if (editingPoster && editingPoster._id) {
+//           await axios.put(`${API_Poster}/update/${editingPoster._id}`, fd, {
+//             headers: { "Content-Type": "multipart/form-data" }
+//           });
+//         } else {
+//           await axios.post(`${API_Poster}/add`, fd, {
+//             headers: { "Content-Type": "multipart/form-data" }
+//           });
+//         }
+//       } else {
+//         // no file -> send JSON (imageurl may be set)
+//         const payload = { ...formDataState };
+//         if (editingPoster && editingPoster._id) {
+//           await axios.put(`${API_Poster}/update/${editingPoster._id}`, payload);
+//         } else {
+//           await axios.post(`${API_Poster}/add`, payload);
+//         }
+//       }
+
+//       await fetchPosters();
+//       setMessage("Saved successfully!");
+//       setTimeout(() => setMessage(""), 3000);
+//       // reset form
+//       setEditingPoster(null);
+//       setFormDataState(emptyPoster);
+//       setImageFile(null);
+//       setPreviewUrl("");
+//     } catch (err) {
+//       console.error("Save err", err);
+//       setMessage("Error saving poster");
+//       setTimeout(() => setMessage(""), 3000);
+//     } finally {
+//       setIsLoading(false);
+//     }
+//   };
+
+//   const handleDelete = async (id) => {
+//     if (!confirm("Delete this poster?")) return;
+//     try {
+//       await axios.delete(`${API_Poster}/delete/${id}`);
+//       await fetchPosters();
+//       setMessage("Deleted");
+//       setTimeout(() => setMessage(""), 2000);
+//     } catch (err) {
+//       console.error("delete err", err);
+//       setMessage("Error deleting");
+//       setTimeout(() => setMessage(""), 2000);
+//     }
+//   };
+
+//   const toggleTrending = async (poster) => {
+//     // mark this poster trending, backend will unset others if requested
+//     try {
+//       const payload = { ...poster, isTrending: !poster.isTrending };
+//       // remove _id from payload since update route accepts body
+//       delete payload._id;
+//       await axios.put(`${API_Poster}/update/${poster._id}`, payload);
+//       await fetchPosters();
+//     } catch (err) {
+//       console.error(err);
+//       setMessage("Error toggling trending");
+//       setTimeout(() => setMessage(""), 2000);
+//     }
+//   };
+
+//   return (
+//     <div className="p-6">
+//       <div className="mb-6 flex items-center justify-between">
+//         <div>
+//           <h1 className="text-2xl font-bold text-gray-800">Poster Manager</h1>
+//           <p className="text-gray-600">Add, edit and manage posters. Min 1 poster required on site.</p>
+//         </div>
+
+//         <div className="flex gap-2">
+//           <button onClick={openNewPoster} className="bg-green-600 text-white px-4 py-2 rounded">Add Poster</button>
+//           <button onClick={fetchPosters} className="bg-gray-200 px-4 py-2 rounded">Refresh</button>
+//         </div>
+//       </div>
+
+//       {message && <div className="mb-4 p-2 bg-green-100 text-green-800 rounded">{message}</div>}
+
+//       {/* Posters list */}
+//       <div className="mb-6">
+//         <h2 className="font-semibold mb-2">Posters</h2>
+//         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+//           {posters.length === 0 && <div className="p-4 bg-yellow-50 rounded">No posters yet</div>}
+//           {posters.map(p => (
+//             <div key={p._id} className="border rounded p-4 bg-white">
+//               <div className="flex justify-between items-start gap-2">
+//                 <div>
+//                   <p className="font-semibold text-sm" style={{ color: p.categoryTextColor || "#000" }}>{p.category}</p>
+//                   <h3 className="font-bold">{p.productname}</h3>
+//                   <p className="text-sm">{p.title}</p>
+//                 </div>
+//                 <div className="flex flex-col gap-2">
+//                   <button onClick={() => openEditPoster(p)} className="px-2 py-1 bg-blue-600 text-white rounded">Edit</button>
+//                   <button onClick={() => handleDelete(p._id)} className="px-2 py-1 bg-red-500 text-white rounded">Delete</button>
+//                   <button onClick={() => toggleTrending(p)} className={`px-2 py-1 rounded ${p.isTrending ? "bg-yellow-400" : "bg-gray-200"}`}>
+//                     {p.isTrending ? "Trending" : "Mark trending"}
+//                   </button>
+//                 </div>
+//               </div>
+
+//               <div className="mt-3">
+//                 <img src={formatPreviewUrl(p.imageurl || "") || speaker} alt="preview" className="w-full h-40 object-cover rounded" />
+//               </div>
+//             </div>
+//           ))}
+//         </div>
+//       </div>
+
+//       {/* Form (Add/Edit) */}
+//       <div className="bg-white rounded-lg shadow-md p-6">
+//         <h2 className="text-lg font-semibold mb-4">{editingPoster ? "Edit Poster" : "Add Poster"}</h2>
+
+//         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+//           <div>
+//             <label className="block text-sm font-medium">Category</label>
+//             <input name="category" value={formDataState.category} onChange={handleInputChange} className="w-full p-2 border rounded" />
+//           </div>
+
+//           <div>
+//             <label className="block text-sm font-medium">Product Name</label>
+//             <input name="productname" value={formDataState.productname} onChange={handleInputChange} className="w-full p-2 border rounded" />
+//           </div>
+
+//           <div className="col-span-1 md:col-span-2">
+//             <label className="block text-sm font-medium">Title</label>
+//             <textarea name="title" value={formDataState.title} onChange={handleInputChange} rows="3" className="w-full p-2 border rounded" />
+//           </div>
+
+//           <div>
+//             <label className="block text-sm font-medium">Original Price</label>
+//             <input type="number" name="originalprice" value={formDataState.originalprice} onChange={handleInputChange} className="w-full p-2 border rounded" />
+//           </div>
+
+//           <div>
+//             <label className="block text-sm font-medium">Price</label>
+//             <input type="number" name="price" value={formDataState.price} onChange={handleInputChange} className="w-full p-2 border rounded" />
+//           </div>
+
+//           {/* timer */}
+//           {["days","hours","minutes","seconds"].map(key => (
+//             <div key={key}>
+//               <label className="block text-sm font-medium">{key}</label>
+//               <input type="number" name={key} value={formDataState[key]} onChange={handleInputChange} className="w-full p-2 border rounded" />
+//             </div>
+//           ))}
+
+//           <div>
+//             <label className="block text-sm font-medium">Button Text</label>
+//             <input name="buttonText" value={formDataState.buttonText} onChange={handleInputChange} className="w-full p-2 border rounded" />
+//           </div>
+
+//           {/* Image upload */}
+//           <div className="col-span-1 md:col-span-2">
+//             <label className="block text-sm font-medium">Upload Image</label>
+//             <input type="file" accept="image/*" onChange={handleImageUpload} className="w-full p-2 border rounded" />
+//             <label className="block mt-2 text-sm">Or paste image URL</label>
+//             <input type="text" name="imageurl" value={formDataState.imageurl} onChange={(e) => { setFormDataState(prev => ({ ...prev, imageurl: e.target.value })); setPreviewUrl(e.target.value); }} className="w-full p-2 border rounded" />
+//           </div>
+
+//           {/* Colors */}
+//           {[
+//             { name: "backgroundColor", label: "Background" },
+//             { name: "textColor", label: "Text" },
+//             { name: "accentColor", label: "Accent" },
+//             { name: "categoryTextColor", label: "Category" },
+//             { name: "buttonColor", label: "Button" },
+//             { name: "buttonTextColor", label: "Button Text" }
+//           ].map(c => (
+//             <div key={c.name}>
+//               <label className="block text-sm font-medium">{c.label}</label>
+//               <div className="flex gap-2">
+//                 <input type="color" name={c.name} value={formDataState[c.name]} onChange={handleInputChange} className="w-12 h-10" />
+//                 <input type="text" name={c.name} value={formDataState[c.name]} onChange={handleInputChange} className="flex-1 p-2 border rounded" />
+//               </div>
+//             </div>
+//           ))}
+
+//           <div className="col-span-1 md:col-span-2 flex items-center gap-4">
+//             <label className="flex items-center gap-2">
+//               <input type="checkbox" name="isTrending" checked={!!formDataState.isTrending} onChange={handleInputChange} />
+//               <span className="text-sm">Mark as trending (only one allowed)</span>
+//             </label>
+//           </div>
+
+//           {/* Preview */}
+//           <div className="col-span-1 md:col-span-2">
+//             <h3 className="font-semibold mb-2">Live Preview</h3>
+//             <div className="p-4 rounded" style={{ backgroundColor: formDataState.backgroundColor }}>
+//               <div className="flex flex-col md:flex-row items-center justify-between">
+//                 <div className="z-10 text-left">
+//                   <p style={{ color: formDataState.categoryTextColor }}>{formDataState.category}</p>
+//                   <h2 style={{ color: formDataState.textColor }}>{formDataState.title}</h2>
+//                   <p className="font-bold">Price: {formDataState.price}</p>
+//                 </div>
+
+//                 <div>
+//                   <img src={previewUrl || formatPreviewUrl(formDataState.imageurl) || speaker} alt="preview" className="w-[200px] h-[160px] object-cover rounded" />
+//                 </div>
+//               </div>
+//             </div>
+//           </div>
+
+//           <div className="col-span-1 md:col-span-2 flex gap-3">
+//             <button onClick={handleSave} disabled={isLoading} className="bg-blue-600 text-white px-4 py-2 rounded">
+//               <Save className="inline-block mr-2" /> {isLoading ? "Saving..." : "Save"}
+//             </button>
+//             <button onClick={() => { setEditingPoster(null); setFormDataState(emptyPoster); setPreviewUrl(""); }} className="bg-gray-200 px-4 py-2 rounded">Cancel</button>
+//           </div>
+//         </div>
+//       </div>
+//     </div>
+//   );
+// };
+
+// export default PosterPage;

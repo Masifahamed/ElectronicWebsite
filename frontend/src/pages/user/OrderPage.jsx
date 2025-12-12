@@ -72,7 +72,7 @@ const OrderPage = () => {
             console.log("delete error", err);
         }
     };
-    console.log(cart)
+    //console.log(cart)
     // Calculations
     const subtotal = cart.reduce((total, item) => total + (item.price || 0) * (item.quantity || 0), 0);
     const tax = +(subtotal * 0.05).toFixed(2);
@@ -81,11 +81,7 @@ const OrderPage = () => {
         const itemSaving = (item.originalprice - item.price) * (item.quantity || 0);
         return total + Math.max(itemSaving, 0);
     }, 0);
-    console.log(saving)
-
-
-
-
+    //console.log(saving)
     const totalprice = +(subtotal + tax).toFixed(2);
 
     // total quantity of products (sum of qty)
@@ -145,7 +141,7 @@ const OrderPage = () => {
             // clear cart on backend
             if (res.data.success) {
                 await axios.delete(`http://localhost:3500/api/cart/deletecart/${userId}`);
-                alert("Order Placed Successfully")
+                // alert("Order Placed Successfully")
                 setmessage("Order Placed Successfully")
                 setShowPopup(true)
                 setTimeout(() => {
@@ -268,7 +264,7 @@ const OrderPage = () => {
 
                             <div className="flex justify-between text-green-600 font-semibold">
                                 <span>Savings</span>
-                                <span>- ₹{saving.toLocaleString('en-IN')}</span>
+                                <span> ₹{saving.toLocaleString('en-IN')}</span>
                             </div>
 
                             <div className="flex justify-between">
@@ -277,9 +273,9 @@ const OrderPage = () => {
                             </div>
 
                             <hr className="my-3" />
-
+                           
                             <div className="flex justify-between text-xl font-bold text-purple-700">
-                                <span>Total</span>
+                                <span>Total ({cart.length})</span>
                                 <span>₹{totalprice.toLocaleString('en-IN')}</span>
                             </div>
                         </div>

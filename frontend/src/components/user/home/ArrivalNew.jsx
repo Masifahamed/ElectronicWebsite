@@ -47,7 +47,7 @@ const ArrivalNew = () => {
         productname: product.productname,
         price: product.price,
         discount: product.discount,
-        rating: product.rating,
+        rating: product.rating && product.rating<5?product.rating:Math.floor(Math.random()*5)+1,
         originalprice: product.originalprice,
         category: product.category,
       });

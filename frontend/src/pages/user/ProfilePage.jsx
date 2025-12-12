@@ -58,8 +58,8 @@ const ProfilePage = () => {
       const userInfo = localStorage.getItem("auth_user");
       const authToken = localStorage.getItem("auth_token");
 
-      console.log("Auth Token exists:", !!authToken);
-      console.log("User Info exists:", !!userInfo);
+      //console.log("Auth Token exists:", !!authToken);
+      //console.log("User Info exists:", !!userInfo);
 
       if (userInfo) {
         const user = JSON.parse(userInfo);

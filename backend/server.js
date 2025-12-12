@@ -14,7 +14,7 @@ import loginroutes from './routes/loginroutes.js';
 import { createDefaultadmin } from './controllers/authController.js';
 import userroute from './routes/UserRoute.js';
 import herorouter from './routes/adminheroroute.js';
-import posterrouter from './routes/Posterroute.js';
+import posterrouter from './routes/posterrouter.js';
 import Arrivalroute from './routes/Arrivalroute.js';
 
 //import paymentRoutes from './routes/paymentRoutes.js';

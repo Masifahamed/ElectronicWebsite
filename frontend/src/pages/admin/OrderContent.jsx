@@ -70,25 +70,7 @@ const OrdersContent = () => {
     }
   }
 
-  const deleteProductFromOrder = async (orderId, productId, userId) => {
-    if (!confirm("Remove this product from order?")) return;
-    try {
-      // route: DELETE /api/order/deleteproduct/:orderId/:productId?userId=... 
-      // We'll call endpoint with params and query userId for safety
-      const res = await axios.delete(`${API}/order/deleteproduct/${userId}/${orderId}/${productId}`);
-      const updated = res.data?.data;
-      if (updated) {
-        setOrders(prev => prev.map(o => (o.orderId === updated.orderId ? updated : o)));
-        if (selected?.orderId === updated.orderId) {
-          setSelected(updated);
-        }
-      }
-      alert("Product removed");
-    } catch (err) {
-      console.error(err);
-      alert("Failed to remove product");
-    }
-  };
+ 
 
  const deletesingleorder = async (userId, orderId) => {
   if (!confirm("Delete this order?")) return;
@@ -279,9 +261,6 @@ const OrdersContent = () => {
                       </div>
                       <div className="flex items-center gap-3">
                         <div className="font-semibold">₹{(p.price * p.quantity).toLocaleString('en-IN')}</div>
-                        <button className="text-red-600 hover:text-red-800" onClick={() => deleteProductFromOrder(selected.orderId, p.productId, selected.userId?._id)}>
-                          <Trash2 className="w-5 h-5" />
-                        </button>
                       </div>
                     </div>
                   ))}

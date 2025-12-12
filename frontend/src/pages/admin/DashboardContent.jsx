@@ -36,7 +36,7 @@ const DashboardContent = () => {
 
       // ------- 4. Calculate Revenue --------
       const totalRevenue = orders.reduce(
-        (sum, o) => sum + (o.totalprice || 500),
+        (sum, o) => sum + (o.totalprice),
         0
       );
 
@@ -120,7 +120,7 @@ const DashboardContent = () => {
                   <p className="text-sm text-gray-600">User: {order.userId?.first}</p>
                 </div>
                 <div className="text-right">
-                  <p className="font-semibold text-gray-800">₹{order.totalprice}</p>
+                  <p className="font-semibold text-gray-800">₹{order.ordersummary?.totalprice.toLocaleString("en-IN")}</p>
                 </div>
               </div>
             ))

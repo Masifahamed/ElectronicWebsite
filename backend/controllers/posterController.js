@@ -50,7 +50,7 @@ export const updateHeroData = async (req, res) => {
       return res.status(404).json({ success: false, message: "Poster not found" });
     }
     if (req.file) {
-      poster.imageurl = `/upload/hero-images/${req.file.filename}`
+      poster.imageurl = `/uploads/hero-images/${req.file.filename}`
     }
     else if(req.body.imageurl){
       poster.imageurl=req.body.imageurl;

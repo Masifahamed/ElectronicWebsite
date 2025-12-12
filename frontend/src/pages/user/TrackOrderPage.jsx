@@ -10,7 +10,7 @@ import {
   Clock,
   AlertCircle,
   RefreshCw,
-  ExternalLink
+  ExternalLink, X
 } from "lucide-react";
 import axios from "axios";
 import { io } from "socket.io-client";
@@ -23,15 +23,15 @@ const OrderTracking = () => {
   const [recentOrders, setRecentOrders] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-
+  const [showpopup, setShowpopup] = useState(false)
   const socketRef = useRef(null);
 
   const user = JSON.parse(localStorage.getItem("auth_user"));
   const userId = user?._id;
 
-  // ----------------------------------------------------------
+
   // 1. Load user orders
-  // ----------------------------------------------------------
+
   const loadOrders = async () => {
     if (!userId) return;
 
@@ -39,6 +39,7 @@ const OrderTracking = () => {
       setLoading(true);
       const res = await axios.get(`http://localhost:3500/api/order/${userId}`);
       setRecentOrders(res.data?.data || []);
+
     } catch (error) {
       console.log("Error fetching orders:", error);
     } finally {
@@ -50,9 +51,9 @@ const OrderTracking = () => {
     loadOrders();
   }, []);
 
-  // ----------------------------------------------------------
+
   // 2. SOCKET – get real-time status updates
-  // ----------------------------------------------------------
+
   useEffect(() => {
     if (!userId) return;
 
@@ -74,13 +75,15 @@ const OrderTracking = () => {
     return () => {
       if (socketRef.current) socketRef.current.disconnect();
     };
-  }, [order]);
+  }, [userId]);
 
-  // ----------------------------------------------------------
+
   // 3. Track Order using Order ID
-  // ----------------------------------------------------------
-  const trackOrder = async () => {
-    if (!trackingId.trim()) {
+
+  const trackOrder = async (id) => {
+    const orderId = id || trackingId.trim()
+
+    if (!orderId) {
       setError("Please enter Order ID");
       return;
     }
@@ -100,6 +103,8 @@ const OrderTracking = () => {
         setOrder(null);
       } else {
         setOrder(found);
+        setShowpopup(true)
+        setTrackingId("")
       }
     } catch (error) {
       setError("Unable to track order");
@@ -108,9 +113,9 @@ const OrderTracking = () => {
     }
   };
 
-  // ----------------------------------------------------------
+
   // Helper Functions
-  // ----------------------------------------------------------
+
   const getStatusColor = (status) => {
     switch (status) {
       case "Pending": return "bg-yellow-100 text-yellow-700";
@@ -123,17 +128,22 @@ const OrderTracking = () => {
   };
 
   const formatDate = (date) => {
-    return new Date(date).toLocaleDateString("en-IN", {
+    return new Date(date).toLocaleString("en-IN", {
       day: "numeric",
       month: "short",
       year: "numeric",
+      hour: "numeric",
+      minute: "numeric",
+      //second:"numeric",
+
+
     });
   };
 
   return (
     <div className="min-h-screen bg-gray-50 py-8 px-6">
       <div className="max-w-4xl mx-auto">
-        
+
         <h1 className="text-4xl font-bold text-center mb-4">Track Your Order</h1>
         <p className="text-center text-gray-600 mb-8">
           Enter your <b>Order ID</b> to check status
@@ -176,7 +186,7 @@ const OrderTracking = () => {
                   key={o._id}
                   onClick={() => {
                     setTrackingId(o._id);
-                    trackOrder();
+                    //trackOrder(o._id);
                   }}
                   className="p-4 border rounded-lg hover:bg-gray-50 cursor-pointer flex justify-between"
                 >
@@ -196,17 +206,18 @@ const OrderTracking = () => {
         )}
 
         {/* ---------------- ORDER DETAILS ---------------- */}
-        {order && (
+        {order && showpopup && (
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="mt-6 bg-white rounded-xl shadow overflow-hidden" 
+            className="mt-6 bg-white rounded-xl relative shadow overflow-hidden"
           >
             <div className="bg-blue-600 text-white p-6">
               <h2 className="text-2xl font-bold">Order {order._id}</h2>
               <p>Total: ₹{order.ordersummary?.totalprice}</p>
             </div>
-
+            <X className="absolute top-3 right-3 cursor-pointer" size={30} onClick={() => { setShowpopup(false); setOrder(null) }
+            } />
             <div className="p-6">
               <h3 className="font-semibold text-lg mb-3 flex items-center gap-2">
                 <Package /> Order Items
