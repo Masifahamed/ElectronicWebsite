@@ -39,17 +39,17 @@ const ProductsContent = () => {
     }
   };
 
-  const calculatingRating = (productId) => {
-    const productReviews = JSON.parse(localStorage.getItem(`productReviews_${productId}`) || '[]');
-    if (productReviews.length === 0) return 0;
-    const totalRating = productReviews.reduce((sum, r) => sum + r.rating, 0);
-    return parseFloat((totalRating / productReviews.length).toFixed(1));
-  };
+  // const calculatingRating = (productId) => {
+  //   const productReviews = JSON.parse(localStorage.getItem(`productReviews_${productId}`) || '[]');
+  //   if (productReviews.length === 0) return 0;
+  //   const totalRating = productReviews.reduce((sum, r) => sum + r.rating, 0);
+  //   return parseFloat((totalRating / productReviews.length).toFixed(1));
+  // };
 
-  const getReviewCount = (productId) => {
-    const productReviews = JSON.parse(localStorage.getItem(`productReviews_${productId}`) || '[]');
-    return productReviews.length;
-  };
+  // const getReviewCount = (productId) => {
+  //   const productReviews = JSON.parse(localStorage.getItem(`productReviews_${productId}`) || '[]');
+  //   return productReviews.length;
+  // };
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -165,15 +165,15 @@ const ProductsContent = () => {
     setShowProductForm(true);
   };
 
-  const refreshProductRating = () => {
-    const updatedProducts = products.map((product) => ({
-      ...product,
-      rating: calculatingRating(product._id),
-      reviews: getReviewCount(product._id)
-    })); 
-    setProducts(updatedProducts);
-    window.confirm('Rating refreshed');
-  };
+  // const refreshProductRating = () => {
+  //   const updatedProducts = products.map((product) => ({
+  //     ...product,
+  //     rating: calculatingRating(product._id),
+  //     reviews: getReviewCount(product._id)
+  //   })); 
+  //   setProducts(updatedProducts);
+  //   window.confirm('Rating refreshed');
+  // };
 
   return (
     <div>
@@ -190,12 +190,12 @@ const ProductsContent = () => {
             <Plus size={20} className="mr-2" />
             Add Product
           </button>
-          <button
+          {/* <button
             onClick={refreshProductRating}
             className="text-sm px-3 py-2 border rounded-lg"
           >
             Refresh Ratings
-          </button>
+          </button> */}
         </div>
       </div>
 

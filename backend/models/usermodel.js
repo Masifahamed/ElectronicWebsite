@@ -1,5 +1,5 @@
 import mongoose from 'mongoose'
-import bcrypt from 'bcrypt'
+
 
 const UserSchema = new mongoose.Schema(
     {
@@ -41,33 +41,6 @@ const UserSchema = new mongoose.Schema(
             type: String,
             enum: ["admin", "user"],
             default: "user"
-        },
-        profile: {
-            totalorder: {
-                type: Number,
-                ref:"Orderdetails",
-                default:0
-            },
-            pending: {
-                type: Number,
-                default: 0
-            },
-            delivery: {
-                type: Number,
-                default: 0
-            },
-            totalspent: {
-                type: Number,
-                default: 0
-            },
-            wishlist: {
-                type: Number,
-                default: 0
-            },
-            totalvalue: {
-                type: Number,
-                default: 0
-            }
         }
     },
     { timestamps: true }

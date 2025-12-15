@@ -108,15 +108,7 @@ export const updateUser = async (req, res) => {
         if (updateData.password) {
             updateData.password = await bcrypt.hash(updateData.password, 10);
         }
-        //handle profile update
-        if (updateData.profile) {
-            const existingUser = await UserModel.findById(id);
-            const existingProfile = existingUser.profile || {};
-            updateData.profile = {
-                ...existingProfile,
-                ...updateData.profile
-            }
-        }
+       
         // Never update confirmPassword to database
         if (updateData.confirmPassword) {
             delete updateData.confirmPassword;
@@ -130,7 +122,7 @@ export const updateUser = async (req, res) => {
                 new: true, // Return updated document
                 runValidators: true // Run schema validations
             }
-        ).select('-password -confirmPassword'); // Exclude passwords from response
+        ).select('+password +confirmPassword'); // Exclude passwords from response
 
         if (!updateUser) {
             return res.status(404).json({

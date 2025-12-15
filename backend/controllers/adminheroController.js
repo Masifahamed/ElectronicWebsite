@@ -3,7 +3,7 @@ import HeroModel from "../models/AdminHeroModel.js";
 // ADD hero product
 export const addHeroProduct = async (req, res) => {
     try {
-        const { productname, description, price, originalprice, discount, imageurl } = req.body;
+        const { productname, description, price, originalprice, discount, imageurl,stock,category } = req.body;
 
         // Validation
         if (!productname || !price || !originalprice || !imageurl) {
@@ -30,6 +30,8 @@ export const addHeroProduct = async (req, res) => {
             originalprice,
             discount: discount || 0,
             imageurl,
+            stock,
+            category,
             order: count // Example: 0,1,2,3,4
         });
 

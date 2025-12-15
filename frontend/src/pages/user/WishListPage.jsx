@@ -130,7 +130,7 @@ const WishlistPage = () => {
     <div className="bg-gray-50 min-h-screen py-12 px-6 md:px-12">
       {/* Header */}
       <div className="text-center mb-12">
-        <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-blue-700 to-indigo-500 bg-clip-text text-transparent mb-3">
+        <h1 className="text-4xl md:text-5xl pb-2 font-bold bg-gradient-to-r from-blue-700 to-indigo-500 bg-clip-text text-transparent mb-3">
           My Wishlist
         </h1>
         <p className="text-gray-600 text-lg">

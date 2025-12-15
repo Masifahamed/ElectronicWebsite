@@ -32,16 +32,16 @@ const DashboardContent = () => {
       // ------- 3. Load All Orders --------
       const orderRes = await fetch("http://localhost:3500/api/order/orderlist");
       const orderData = await orderRes.json();
-      const orders = orderData?.data ?? [];
+      const orders = orderData?.data?? [];
 
       // ------- 4. Calculate Revenue --------
       const totalRevenue = orders.reduce(
-        (sum, o) => sum + (o.totalprice),
+        (sum, o) => sum + (o.ordersummary.totalprice),
         0
       );
 
       // ------- 5. Recent 5 orders --------
-      setRecentOrders(orders.slice(-5).reverse());
+      setRecentOrders(orders.slice(-6).reverse());
 
       // ------- 6. Update Stats --------
       setStats({

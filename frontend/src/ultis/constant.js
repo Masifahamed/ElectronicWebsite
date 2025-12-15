@@ -156,6 +156,15 @@ export const initializeDefaultAdmin = () => {
   }
 };
 
+
+ export const getimagesrc = (imageurl) => {
+        if (!imageurl) return "/no-image.png"
+        if (imageurl.startsWith("http")) {
+            return imageurl
+        }
+        return `http://localhost:3500${imageurl}`
+    }
+
 // Call this in your main App.js component
 // initializeDefaultAdmin();
 

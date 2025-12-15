@@ -72,17 +72,7 @@ const Register = () => {
     return Object.keys(newErrors).length === 0;
   };
 
-  const checkEmailExists = async (email) => {
-    try {
-      const res = await fetch(`http://localhost:3500/api/user/checkemail/${email}`)
-      const data = await res.json();
-      return data.exists;
-    } catch (err) {
-      console.error(err)
-      return false
-    }
-  }
-
+ 
   // HANDLE SUBMIT 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -91,12 +81,7 @@ const Register = () => {
     setIsLoading(true);
 
     try {
-      const emailExists=await checkEmailExists(formData.email)
-      if(emailExists){
-        setErrors({submit:"Email already registered. Please login"})
-        setIsLoading(false);
-        return
-      }
+    
       const bodyData = {
         first: formData.first,
         last: formData.last,

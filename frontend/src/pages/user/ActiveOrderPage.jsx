@@ -2,6 +2,7 @@ import React, { useEffect, useState, useRef } from "react";
 import axios from "axios";
 import { ChevronDown, ChevronUp } from "lucide-react";
 import { io } from "socket.io-client";
+import { getimagesrc } from "../../ultis/constant";
 
 const API = "http://localhost:3500/api";
 const SOCKET_URL = "http://localhost:3500"
@@ -57,6 +58,7 @@ const ActiveOrder = () => {
     setExpandedOrder(expandedOrder === id ? null : id);
   };
 
+
   const formatDate = (date) => {
     return new Date(date).toLocaleString("en-IN", {
       day: "numeric",
@@ -85,7 +87,7 @@ const ActiveOrder = () => {
               onClick={() => toggleOrderExpansion(order._id)}
             >
               <div>
-                <p className="font-semibold">Order ID: {order.orderId}</p>
+                <p className="font-semibold">Order ID: {order._id || order.orderId}</p>
 
                 <p className="text-gray-500 text-sm">
                   Date: {formatDate(order.createdAt)}
@@ -111,7 +113,7 @@ const ActiveOrder = () => {
                 {order.products.map((p, index) => (
                   <div key={index} className="flex items-center gap-4 border-b pb-3">
                     <img
-                      src={p.imageurl}
+                      src={getimagesrc(p.imageurl)}
                       alt={p.productname}
                       className="w-16 h-16 object-cover rounded"
                     />

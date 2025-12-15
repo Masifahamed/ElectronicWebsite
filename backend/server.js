@@ -16,6 +16,7 @@ import userroute from './routes/UserRoute.js';
 import herorouter from './routes/adminheroroute.js';
 import posterrouter from './routes/posterrouter.js';
 import Arrivalroute from './routes/Arrivalroute.js';
+import path from 'path';
 
 //import paymentRoutes from './routes/paymentRoutes.js';
 
@@ -52,7 +53,7 @@ app.use('/api/cart', cartroute)
 app.use("/api/login", loginroutes)
 app.use('/api/hero', herorouter)
 app.use('/api/poster', posterrouter)
-app.use("/uploads", express.static("uploads"));
+app.use("/uploads", express.static(path.join(process.cwd(),"uploads")));
 app.use('/api/arrival',Arrivalroute)
 //app.use('/api/payment',paymentRoutes)
 app.set('io',io);

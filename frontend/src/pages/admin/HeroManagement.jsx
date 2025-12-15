@@ -99,6 +99,7 @@ const HeroManagement = () => {
     try {
       await axios.delete(`${BASE_URL}/delete/${id}`);
       fetchHeroes();
+
     } catch (error) {
       console.error("Delete Error:", error);
     }
@@ -121,13 +122,12 @@ const HeroManagement = () => {
     const item = heroes.find((h) => h._id === id);
     if (!item) return;
 
-    const newOrder = direction === "up" ? item.order - 1 : item.order + 1;
+    const newOrder = direction === "down" ? item.order + 1 : item.order - 1;
 
     try {
       await axios.put(`${BASE_URL}/updateorder`, {
         items: [{ id: id, order: newOrder }],
       });
-
       fetchHeroes();
     } catch (err) {
       console.error("Reorder Error:", err);
@@ -162,7 +162,7 @@ const HeroManagement = () => {
 
       {/* Form Modal */}
       {showForm && (
-        <div className="fixed inset-0 bg-black/40 flex justify-center items-center">
+        <div className="fixed inset-0 bg-black/70 flex justify-center items-center">
           <div className="bg-white p-6 rounded shadow-lg w-[450px] relative">
             <button
               className="absolute top-3 right-3"

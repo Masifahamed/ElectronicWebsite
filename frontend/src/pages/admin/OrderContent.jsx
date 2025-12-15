@@ -3,6 +3,7 @@ import React, { useEffect, useState, useRef } from "react";
 import axios from "axios";
 import { io } from "socket.io-client";
 import { Eye, RefreshCw, Trash2, Edit2 } from "lucide-react";
+import { getimagesrc } from "../../ultis/constant";
 
 // API base
 const API = "http://localhost:3500/api";
@@ -35,7 +36,7 @@ const OrdersContent = () => {
     socketRef.current.on("order_status_updated", ({ orderId, order }) => {
       setOrders(prev => prev.map(o => (o.orderId === orderId ? order : o)));
     });
-  
+
 
     return () => {
       if (socketRef.current) socketRef.current.disconnect();
@@ -61,42 +62,43 @@ const OrdersContent = () => {
   };
 
   const deletealleorder = async () => {
+     if (!window.confirm("Are you sure want to delete all Orders")) return
     try {
-      const res = await axios.delete("http://localhost:3500/api/order/deleteorder")
-      alert("delete all order")
-      setOrders(res.data.data)
+        const res = await axios.delete("http://localhost:3500/api/order/deleteorder")
+        setOrders(res.data.data)
+      
     } catch (err) {
       console.log("something wentt wrong")
     }
   }
 
- 
 
- const deletesingleorder = async (userId, orderId) => {
-  if (!confirm("Delete this order?")) return;
 
-  try {
-    const res = await axios.delete(`${API}/order/deletesingleorder/${userId}/${orderId}`);
+  const deletesingleorder = async (userId, orderId) => {
+    if (!confirm("Delete this order?")) return;
 
-    if (res.data.success) {
-      // Remove deleted order from UI'
-      const remainingorders=res.data.data;
-      setOrders(remainingorders)
-      if(selected?.orderId===orderId){
-        setShowModal(false)
-        setSelected(null)
+    try {
+      const res = await axios.delete(`${API}/order/deletesingleorder/${userId}/${orderId}`);
+
+      if (res.data.success) {
+        // Remove deleted order from UI'
+        const remainingorders = res.data.data;
+        setOrders(remainingorders)
+        if (selected?.orderId === orderId) {
+          setShowModal(false)
+          setSelected(null)
+        }
+        //setOrders(prev => prev.filter(order => order.orderId !== orderId));
+        alert("Order deleted successfully");
+      } else {
+        alert("Failed to delete order");
       }
-      //setOrders(prev => prev.filter(order => order.orderId !== orderId));
-      alert("Order deleted successfully");
-    } else {
-      alert("Failed to delete order");
-    }
 
-  } catch (err) {
-    console.error("Delete order error:", err);
-    alert("Server error while deleting order");
-  }
-};
+    } catch (err) {
+      console.error("Delete order error:", err);
+      alert("Server error while deleting order");
+    }
+  };
 
 
   const updateStatus = async (orderId, newstatus) => {
@@ -253,7 +255,7 @@ const OrdersContent = () => {
                   {selected.products?.map((p) => (
                     <div key={p.productId} className="flex items-center justify-between bg-white border px-3 py-2 rounded-md">
                       <div className="flex items-center gap-3">
-                        <img src={p.imageurl} alt={p.productname} className="w-16 h-16 object-cover rounded-md" />
+                        <img src={getimagesrc(p.imageurl)} alt={p.productname} className="w-16 h-16 object-cover rounded-md" />
                         <div>
                           <div className="font-medium">{p.productname}</div>
                           <div className="text-sm text-gray-500">Qty: {p.quantity}</div>

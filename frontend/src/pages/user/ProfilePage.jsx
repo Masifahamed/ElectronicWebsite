@@ -528,7 +528,7 @@ const ProfilePage = () => {
                 <p className="text-2xl font-bold text-red-500">{wishlistStats.length}</p>
                 <p className="text-sm text-gray-600">Items Saved</p>
               </div>
-              <div className="text-center p-4 bg-gray-50 rounded-lg">
+              <div className="text-center p-4 bg-gray-50 rounded-lg wrap-anywhere">
                 <p className="text-2xl font-bold text-green-500">₹{wishlistStats.reduce((total, item) => total + item.price, 0)}</p>
                 <p className="text-sm text-gray-600">Total Value</p>
               </div>

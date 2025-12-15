@@ -41,7 +41,7 @@ export const addproducttocart = async (req, res) => {
 
         // Check product exist
         const existingProduct = cart.cartlist.find(
-            (item) => item.productId.toString() === productId);
+            (item) => item.productId.equals(productId));
 
         if (existingProduct) {
             existingProduct.quantity += 1;
@@ -99,7 +99,7 @@ export const decreaseQuantity = async (req, res) => {
         }
 
         // Check product in cart
-        const product = cart.cartlist.find((item) => item.productId.toString() === productId.toString());
+        const product = cart.cartlist.find((item) => item.productId.toString() === productId);
 
         if (!product) {
             return res.status(404).json({ message: "Product not found in cart" });
@@ -108,9 +108,11 @@ export const decreaseQuantity = async (req, res) => {
         // Decrease quantity
         if (product.quantity > 1) {
             product.quantity -= 1;
+           
         } else {
             // If qty = 1, remove item completely
-            cart.cartlist = cart.cartlist.filter((item) => item.productId !== productId);
+            cart.cartlist = cart.cartlist.filter((item) => item.productId.toString() !== productId);
+         
         }
 
         await cart.save();
@@ -145,7 +147,7 @@ export const increaseQuantity = async (req, res) => {
         }
 
         // Find product
-        const product = cart.cartlist.find((item) => item.productId.toString() === productId.toString());
+        const product = cart.cartlist.find((item) => item.productId.toString() === productId);
 
         if (!product) {
             return res.status(404).json({ message: "Product not found in cart" });
@@ -275,14 +277,14 @@ export const deletecartitem = async (req, res) => {
             })
         }
         res.status(200).json({
-            success:true,
+            success: true,
             message: "Entire Cart is removed from user successfully",
             data: []
         })
     } catch (err) {
         return res.status(500).json({
-            success:false,
-            message: err.message ||"something went wrong may be try later"
+            success: false,
+            message: err.message || "something went wrong may be try later"
         })
     }
 }

@@ -21,6 +21,7 @@ const productSchema=new mongoose.Schema(
         },
         originalprice:{
             type:Number,
+            min:[150,"Minimum original price sholud be greater than Discount Price"]
         },
         category:{
             type:String,
@@ -41,11 +42,10 @@ const productSchema=new mongoose.Schema(
             required:[true,'Required the image URL'],
             
         },
-         date: {
+         Date: {
             type: Date,
             default: Date.now
         },
-       
     }
 )
 

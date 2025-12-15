@@ -18,8 +18,8 @@ export const AuthProvider = ({ children }) => {
 
   useEffect(() => {
     // Check if user is logged in on app start
-    const token = localStorage.getItem('authToken');
-    const userData = localStorage.getItem('userData');
+    const token = localStorage.getItem('auth_token');
+    const userData = localStorage.getItem('auth_user');
     
     if (token && userData) {
       setUser(JSON.parse(userData));
@@ -28,14 +28,14 @@ export const AuthProvider = ({ children }) => {
   }, []);
 
   const login = (userData, token) => {
-    localStorage.setItem('authToken', token);
-    localStorage.setItem('userData', JSON.stringify(userData));
+    localStorage.setItem('auth_token', token);
+    localStorage.setItem('auth_user', JSON.stringify(userData));
     setUser(userData);
   };
 
   const logout = () => {
-    localStorage.removeItem('authtoken');
-    localStorage.removeItem('userData');
+    localStorage.removeItem('auth_token');
+    localStorage.removeItem('auth_user');
     setUser(null);
   };
 

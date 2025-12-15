@@ -51,6 +51,13 @@ const OrderPage = () => {
         }
     };
 
+    const getimagesrc = (imageurl) => {
+        if (!imageurl) return "/no-image.png"
+        if (imageurl.startsWith("http")) {
+            return imageurl
+        }
+        return `http://localhost:3500${imageurl}`
+    }
 
     // Decrease Qty
     const decreaseQuantity = async (productId, quantity) => {
@@ -195,7 +202,7 @@ const OrderPage = () => {
                             >
                                 <div className="flex items-center gap-4">
                                     <img
-                                        src={item.imageurl}
+                                        src={getimagesrc(item.imageurl)}
                                         alt={item.productname}
                                         className="w-24 h-24 rounded-lg object-cover"
                                     />
@@ -273,7 +280,7 @@ const OrderPage = () => {
                             </div>
 
                             <hr className="my-3" />
-                           
+
                             <div className="flex justify-between text-xl font-bold text-purple-700">
                                 <span>Total ({cart.length})</span>
                                 <span>₹{totalprice.toLocaleString('en-IN')}</span>

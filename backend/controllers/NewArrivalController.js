@@ -26,27 +26,12 @@ export const newArrival = async (req, res) => {
 
 export const newProduct = async (req, res) => {
     try {
-        // const { productname, price, category, description, originalprice, imageurl,isNewArrival } = req.body
-        // if (!productname || !price || !category) {
-        //     return res.status(400).send({
-        //         success:false,
-        //         message: "Send All required Fields"
-        //     })
-        // }
-        // const createproduct = {
-        //     productname,
-        //     price,
-        //     category,
-        //     description,
-        //     originalprice,
-        //     imageurl,
-        //     isNewArrival
-        // }
+       
         const product = new ArrivalModel(req.body);
        await product.save()
         res.status(200).json({
             success:true,
-            message:"product update successfully",
+            message:"product create successfully",
             data:product
         });
     } catch (error) {

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import speaker from '../../../assets/speaker.png';
 import axios from 'axios';
 import SuccessPopup from './../SuccessPopup'
+import Speaker from '../../../assets/speaker.png';
 
 const ProductPoster = () => {
   const [timeLeft, setTimeLeft] = useState({
@@ -55,7 +55,7 @@ const ProductPoster = () => {
       })
       console.log(res.data.message)
 
-     // alert("product is added to cart successfully")
+      // alert("product is added to cart successfully")
       // Show success message
       setShowCartMessage("product added successfully");
 
@@ -73,12 +73,19 @@ const ProductPoster = () => {
     }
   };
 
+  const getimagesrc = (imageurl) => {
+    if (!imageurl) return "/no-image.png"
+    if (imageurl.startsWith("http")) {
+      return imageurl
+    }
+    return `http://localhost:3500${imageurl}`
+  }
   // Load hero/poster data
   useEffect(() => {
     const loadposter = async () => {
       try {
         const res = await axios.get("http://localhost:3500/api/poster/");
-        if (res.data.success && res.data.data) {
+        if (res.data.data) {
 
           const data = res.data.data;
           setDisplayData(data);
@@ -198,14 +205,14 @@ const ProductPoster = () => {
             }}
           ></div>
           <img
-            src={displayData.imageurl || speaker}
+            src={getimagesrc(displayData.imageurl)}
             alt="speaker"
             className="relative w-[200px] sm:w-[300px] md:w-[400px] lg:w-[450px] z-10"
           />
         </div>
       </div>
       {showProductPopup && (
-      <SuccessPopup  bgcolor="success" title={showCartMessage}/>
+        <SuccessPopup bgcolor="success" title={showCartMessage} />
       )
       }
     </section>

@@ -81,7 +81,7 @@ const AdminDashboard = () => {
         <div className="flex items-center justify-between p-6 border-b">
           <div>
             <h1 className="text-2xl font-bold text-gray-800">Admin Panel</h1>
-            <p className="text-sm text-gray-600 mt-1">Welcome back, {adminUser.first}</p>
+            <p className="text-sm text-gray-600 mt-1">Welcome back, {adminUser.first||"Masif Ahamed"}</p>
           </div>
           <button
             onClick={() => setSidebarOpen(false)}

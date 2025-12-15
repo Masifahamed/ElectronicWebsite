@@ -36,7 +36,7 @@ export const addPoster = async (req, res) => {
 export const getHeroData = async (req, res) => {
   try {
     const hero = await Postermodel.findOne();
-    res.json({ success: true, data: hero || {} });
+   return res.status(200).json({ success: true, data: hero || {} });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
   }
@@ -52,7 +52,7 @@ export const updateHeroData = async (req, res) => {
     if (req.file) {
       poster.imageurl = `/uploads/hero-images/${req.file.filename}`
     }
-    else if(req.body.imageurl){
+    else if(req.body.imageurl){  
       poster.imageurl=req.body.imageurl;
     }
     // Update text fields

@@ -156,8 +156,8 @@ const NewArrival = () => {
                                 name="description"
                                 value={formData.description}
                                 onChange={handleChange}
-                                className="w-full p-3 border rounded-lg"
-                                rows="3"
+                                className="w-full p-3 border rounded-lg resize-none "
+                                rows={1}
                                 required
                             />
                         </div>

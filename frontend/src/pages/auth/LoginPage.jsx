@@ -43,8 +43,11 @@ const handleChange = (e) => {
       if (user.role ==="admin") {
       setPopupMessage("welcome admin masif")
         setShowPopup(true)
-        
-        navigate("/adminpage",{replace:true});
+        setTimeout(() => {
+          setShowPopup(false)
+           navigate("/adminpage",{replace:true});
+        }, 1500);
+       
       }else{
               // NORMAL USER LOGIN
               setPopupMessage(`${user.name},${message}`)

@@ -70,10 +70,11 @@ const ProductGrid = () => {
                     views: p.views || Math.floor(Math.random() * 1000) + 10,
                     likes: p.likes || Math.floor(Math.random() * 500) + 50,
                     reviews: p.reviews || Math.floor(Math.random() * 100) + 1,
-                    inStock: p.stock > 0 || true
-
+                    inStock: p.stock > 0,
+                    Date: p.Date
                 }))
-                setTodaysale(saleproduct.slice(0, 6))
+                const todaysproduct = saleproduct.sort((a, b) => new Date(b.Date) - new Date(a.Date)).toReversed().slice(-6)
+                setTodaysale(todaysproduct)
             } catch (err) {
                 console.log(err)
 
@@ -181,7 +182,7 @@ const ProductGrid = () => {
                 rating: item.rating,
                 category: item.category,
                 imageurl: item.imageurl,
-                quantity:quantity  // selected quantity
+                quantity: quantity  // selected quantity
             };
             const res = await axios.post("http://localhost:3500/api/cart/add", payload)
             console.log(res.data.message)
