@@ -164,7 +164,7 @@ export const initializeDefaultAdmin = () => {
         if (imageurl.startsWith("http")) {
             return imageurl
         }
-        return `http://localhost:3500${imageurl}`
+        return `${backend}${imageurl}`
     }
 
 // Call this in your main App.js component
