@@ -7,7 +7,7 @@ import orderroute from './routes/orderroute.js';
 import http from 'http'
 import { Server } from 'socket.io';
 import wishlistroute from './routes/wishlistroute.js';
-import cartroute from './routes/Cartroute.js';
+import cartroute from './routes/cartroute.js';
 import dotenv from 'dotenv'
 import loginroutes from './routes/loginroutes.js';
 //import UserModel from './models/usermodel.js';
