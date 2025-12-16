@@ -50,7 +50,8 @@ const WishlistPage = () => {
       await axios.delete(`http://localhost:3500/api/wishlist/remove/${userId}/${productId}`);
       setMessage("Product remove from wishlist")
       setPopup(true)
-      setWishlistItems((prev) => prev.filter((item) => item.productId !== productId));
+      //setWishlistItems((prev) => prev.filter((item) => item.productId !== productId));
+      await fetchWishlist()
       setTimeout(() => {
         setPopup(false)
       }, 2000);
@@ -71,7 +72,7 @@ const WishlistPage = () => {
         price: product.price,
         discount: product.discount,
         rating: product.rating,
-        originalprice:product.originalprice,
+        originalprice: product.originalprice,
         category: product.category,
         quantity: 1
       })
@@ -297,7 +298,14 @@ const WishlistPage = () => {
 
                   {/* Added Date */}
                   <div className="text-xs text-gray-500 text-center mt-3">
-                    Added on {new Date(product.addedDate).toLocaleString()}
+                    Added on {new Date(product.addedDate).toLocaleString("en-IN",{
+                      day:"2-digit",
+                      month:"short",
+                      year:"numeric",
+                      hour:"numeric",
+                      minute:"numeric"
+                      
+                    }).toUpperCase()}
                   </div>
                 </div>
               </motion.div>
@@ -356,7 +364,7 @@ const WishlistPage = () => {
       )}
       {
         popup && (
-          <SuccessPopup title={Message} bgcolor="success"/>
+          <SuccessPopup title={Message} bgcolor="success" />
         )
       }
 

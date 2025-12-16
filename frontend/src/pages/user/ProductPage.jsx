@@ -80,7 +80,7 @@ const ProductPage = () => {
         _id: p._id || p.id,
         imageurl: p.imageurl || p.image,
         originalprice: p.originalprice || p.originalPrice,
-        rating: p.rating && p.rating<=5? p.rating : Math.floor(Math.random()*5) + 1,
+        rating: p.rating && p.rating <= 5 ? p.rating : Math.floor(Math.random() * 5) + 1,
         views: p.views || Math.floor(Math.random() * 1000) + 10,
         likes: p.likes || Math.floor(Math.random() * 500) + 50,
         reviews: p.reviews || Math.floor(Math.random() * 100) + 1,
@@ -214,32 +214,60 @@ const ProductPage = () => {
   }, [userId])
 
   // Handle quantity changes
+  // const increaseQuantity = async (productId) => {
+  //   const newQty = quantity + 1
+  //   setQuantity(newQty)
+  //   await axios.post(`http://localhost:3500/api/cart/increase`, {
+  //     userId,
+  //     productId,
+  //     quantity: newQty
+  //   })
+  //   loadCart()
+  //   //setQuantity(prev => prev + 1);
+  // };
   const increaseQuantity = async (productId) => {
-    const newQty = quantity + 1
-    setQuantity(newQty)
-    await axios.post(`http://localhost:3500/api/cart/increase`, {
-      userId,
-      productId,
-      quantity: newQty
+    setQuantity(prev => {
+      const newQty = prev + 1
+      axios.post(`http://localhost:3500/api/cart/increase`, {
+        productId,
+        userId,
+        quantity: newQty
+      })
+      return newQty
     })
     loadCart()
-    //setQuantity(prev => prev + 1);
-  };
+  }
 
-  const decreaseQuantity = async (productId, quantity) => {
-    if (quantity <= 1) return
+  // const decreaseQuantity = async (productId, quantity) => {
+  //   if (quantity <= 1) return
 
-    const newQty = quantity - 1
-    setQuantity(newQty)
+  //   const newQty = quantity - 1
+  //   setQuantity(newQty)
 
-    await axios.post(`http://localhost:3500/api/cart/decrease`, {
-      userId,
-      productId,
-      quantity: newQty
+  //   await axios.post(`http://localhost:3500/api/cart/decrease`, {
+  //     userId,
+  //     productId,
+  //     quantity: newQty
+  //   })
+  //   loadCart()
+  //   //setQuantity(prev => prev > 1 ? prev - 1 : 1);
+  // };
+
+  const decreaseQuantity = async (productId) => {
+    setQuantity(prev => {
+      const newQty = prev - 1
+      axios.post("http://localhost:3500/api/cart/decrease", {
+        userId,
+        productId,
+        quantity: newQty
+      })
+      return newQty
     })
     loadCart()
-    //setQuantity(prev => prev > 1 ? prev - 1 : 1);
-  };
+  }
+// const decrease=()=>{
+// setQuantity(prev=> prev-1)
+// }
 
   // Handle search input change
   const handleSearchChange = (e) => {
@@ -316,7 +344,7 @@ const ProductPage = () => {
           discount: product.discount,
           originalprice: product.originalprice,
           category: product.category,
-          rating:product.rating && product.rating < 5? product.rating : Math.floor(Math.random()*5)+1,
+          rating: product.rating && product.rating < 5 ? product.rating : Math.floor(Math.random() * 5) + 1,
           stock: product.stock,
           description: product.description
         }
@@ -710,7 +738,7 @@ const ProductPage = () => {
                     <label className="block text-sm font-medium text-gray-700">Quantity</label>
                     <div className="flex items-center space-x-4">
                       <button
-                        onClick={() => decreaseQuantity(selectedProduct._id, quantity)}
+                        onClick={() => decreaseQuantity(selectedProduct._id)}
                         className="w-10 h-10 rounded-full border border-gray-300 flex items-center justify-center hover:bg-gray-50 transition"
                       >
                         <Minus className="w-4 h-4" />

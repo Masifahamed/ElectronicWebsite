@@ -61,7 +61,7 @@ const OrderPage = () => {
 
     // Decrease Qty
     const decreaseQuantity = async (productId, quantity) => {
-        if (quantity <= 1) return;
+        //if (quantity <= 1) return;
         try {
             await axios.post(`${CartAPI}decrease`, { userId, productId, quantity });
             await loadCart();

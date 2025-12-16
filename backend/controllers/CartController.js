@@ -28,7 +28,8 @@ export const addproducttocart = async (req, res) => {
                     rating,
                     category,
                     originalprice,
-                    quantity: quantity || 1
+                    //quantity:quantity || 1
+                    quantity: quantity ?? 1
                 }]
             });
             console.log(cart)
@@ -108,11 +109,11 @@ export const decreaseQuantity = async (req, res) => {
         // Decrease quantity
         if (product.quantity > 1) {
             product.quantity -= 1;
-           
+
         } else {
             // If qty = 1, remove item completely
             cart.cartlist = cart.cartlist.filter((item) => item.productId.toString() !== productId);
-         
+
         }
 
         await cart.save();
@@ -244,7 +245,7 @@ export const deleteproductfromcart = async (req, res) => {
 
         // Remove product
         cart.cartlist = cart.cartlist.filter(item => item.productId.toString() !== productId);
-
+        //cart.cartlist = cart.cartlist.findByIdAndDelete(exists)
         await cart.save();
 
         return res.status(200).json({
