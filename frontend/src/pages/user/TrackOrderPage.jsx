@@ -14,8 +14,9 @@ import {
 } from "lucide-react";
 import axios from "axios";
 import { io } from "socket.io-client";
+import { backend } from "../../ultis/constant";
 
-const SOCKET_URL = "http://localhost:3500";
+const SOCKET_URL = backend;
 
 const OrderTracking = () => {
   const [trackingId, setTrackingId] = useState("");
@@ -37,7 +38,7 @@ const OrderTracking = () => {
 
     try {
       setLoading(true);
-      const res = await axios.get(`http://localhost:3500/api/order/${userId}`);
+      const res = await axios.get(`${backend}/api/order/${userId}`);
       setRecentOrders(res.data?.data || []);
 
     } catch (error) {
@@ -92,7 +93,7 @@ const OrderTracking = () => {
     setError("");
 
     try {
-      const res = await axios.get(`http://localhost:3500/api/order/${userId}`);
+      const res = await axios.get(`${backend}/api/order/${userId}`);
 
       const orders = res.data?.data || [];
 

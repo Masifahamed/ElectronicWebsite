@@ -4,8 +4,9 @@ import { Eye, Heart, Star, Search, Filter, X, ShoppingCart, Plus, Minus } from "
 import { useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
 import SuccessPopup from '../../components/user/SuccessPopup'
+import { backend } from "../../ultis/constant";
 
-const API_BASE = 'http://localhost:3500'
+
 
 const ProductPage = () => {
   const location = useLocation();
@@ -30,7 +31,7 @@ const ProductPage = () => {
 
     const loadWishlist = async () => {
       try {
-        const res = await fetch(`${API_BASE}/api/wishlist/single/${userId}`);
+        const res = await fetch(`${backend}/api/wishlist/single/${userId}`);
         const data = await res.json();
 
         const liked = {};
@@ -73,7 +74,7 @@ const ProductPage = () => {
 
   useEffect(() => {
     const fetchallproduct = async () => {
-      const productdata = await fetch(`${API_BASE}/api/product`)
+      const productdata = await fetch(`${backend}/api/product`)
       const { data } = await productdata.json()
       const fixedProducts = data.map(p => ({
         ...p,
@@ -167,7 +168,7 @@ const ProductPage = () => {
       //const cart = JSON.parse(localStorage.getItem('cart') || '[]');
 
       // Check if product already exists in cart
-      const res = await axios.post("http://localhost:3500/api/cart/add", {
+      const res = await axios.post(`${backend}/api/cart/add`, {
         userId: userId,
         productId: product._id,
         imageurl: product.imageurl,
@@ -201,7 +202,7 @@ const ProductPage = () => {
 
   const loadCart = async () => {
     try {
-      const res = await axios.get(`http://localhost:3500/api/cart/single/${userId}`)
+      const res = await axios.get(`${backend}/api/cart/single/${userId}`)
       setCart(res.data.data.cartlist);
       setLoading(false)
     } catch (err) {
@@ -228,7 +229,7 @@ const ProductPage = () => {
   const increaseQuantity = async (productId) => {
     setQuantity(prev => {
       const newQty = prev + 1
-      axios.post(`http://localhost:3500/api/cart/increase`, {
+      axios.post(`${backend}/api/cart/increase`, {
         productId,
         userId,
         quantity: newQty
@@ -256,7 +257,7 @@ const ProductPage = () => {
   const decreaseQuantity = async (productId) => {
     setQuantity(prev => {
       const newQty = prev - 1
-      axios.post("http://localhost:3500/api/cart/decrease", {
+      axios.post(`${backend}/api/cart/decrease`, {
         userId,
         productId,
         quantity: newQty
@@ -335,7 +336,7 @@ const ProductPage = () => {
 
       if (!isLiked) {
         await axios.post(
-          `${API_BASE}/api/wishlist/add`, {
+          `${backend}/api/wishlist/add`, {
           userId,
           productId,
           imageurl: product.imageurl,
@@ -359,7 +360,7 @@ const ProductPage = () => {
         setsuccessmessage("Added to wishlist")
       } else {
 
-        await axios.delete(`${API_BASE}/api/wishlist/remove/${userId}/${productId}`);
+        await axios.delete(`${backend}/api/wishlist/remove/${userId}/${productId}`);
 
         setsuccessmessage("remove from wishlist")
         // update UI

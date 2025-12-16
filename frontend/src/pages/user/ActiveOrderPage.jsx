@@ -2,10 +2,10 @@ import React, { useEffect, useState, useRef } from "react";
 import axios from "axios";
 import { ChevronDown, ChevronUp } from "lucide-react";
 import { io } from "socket.io-client";
-import { getimagesrc } from "../../ultis/constant";
+import { backend, getimagesrc } from "../../ultis/constant";
 
-const API = "http://localhost:3500/api";
-const SOCKET_URL = "http://localhost:3500"
+
+const SOCKET_URL = backend
 
 const ActiveOrder = () => {
   const [orders, setOrders] = useState([]);
@@ -19,7 +19,7 @@ const ActiveOrder = () => {
     const userId = user?._id
     try {
       setLoading(true);
-      const res = await axios.get(`${API}/order/${userId}`);
+      const res = await axios.get(`${backend}/api/order/${userId}`);
       setOrders(res.data?.data || []);
     } catch (err) {
       console.error("Error fetching orders:", err);

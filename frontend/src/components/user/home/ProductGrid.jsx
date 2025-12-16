@@ -8,8 +8,9 @@ import { motion } from 'framer-motion';
 import SuccessPopup from '../SuccessPopup'
 import { Minus, Plus } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { backend } from '../../../ultis/constant';
 
-const API_BASE = 'http://localhost:3500/api'
+const API_BASE = `${backend}/api`
 
 const ProductGrid = () => {
     const { isAuthenticated, requireAuth } = useAuth();
@@ -184,7 +185,7 @@ const ProductGrid = () => {
                 imageurl: item.imageurl,
                 quantity: quantity  // selected quantity
             };
-            const res = await axios.post("http://localhost:3500/api/cart/add", payload)
+            const res = await axios.post(`${backend}/api/cart/add`, payload)
             console.log(res.data.message)
             setShowCartMessage(true)
             setShowProductPopup(false)
@@ -214,7 +215,7 @@ const ProductGrid = () => {
     const increaseQuantity = async (productId) => {
         const newqty = quantity + 1
         setQuantity(newqty)
-        await axios.post(`http://localhost:3500/api/cart/increase`, {
+        await axios.post(`${backend}/api/cart/increase`, {
             userId,
             productId,
             quantity: newqty
@@ -227,7 +228,7 @@ const ProductGrid = () => {
         const newQty = quantity - 1
         setQuantity(newQty)
 
-        await axios.post(`http://localhost:3500/api/cart/decrease`, {
+        await axios.post(`${backend}/api/cart/decrease`, {
             userId,
             productId,
             quantity: newQty

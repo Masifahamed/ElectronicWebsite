@@ -9,6 +9,7 @@ import {
   X,
   Loader,
 } from "lucide-react";
+import { backend } from "../../ultis/constant";
 
 const BASE_URL = "http://localhost:3500/api/hero";
 
@@ -33,7 +34,7 @@ const HeroManagement = () => {
   // Fetch hero products
   const fetchHeroes = async () => {
     try {
-      const res = await axios.get(`${BASE_URL}`);
+      const res = await axios.get(`${backend}/api/hero`);
       setHeroes(res.data.data || res.data);
     } catch (err) {
       console.error("Fetch Error:", err);
@@ -58,10 +59,10 @@ const HeroManagement = () => {
 
       if (editId) {
         // UPDATE
-        await axios.put(`${BASE_URL}/updatehero/${editId}`, formData);
+        await axios.put(`${backend}/api/hero/updatehero/${editId}`, formData);
       } else {
         // ADD
-        await axios.post(`${BASE_URL}/add`, formData);
+        await axios.post(`${backend}/api/hero/add`, formData);
       }
 
       setShowForm(false);
@@ -97,7 +98,7 @@ const HeroManagement = () => {
     if (!window.confirm("Delete this hero product?")) return;
 
     try {
-      await axios.delete(`${BASE_URL}/delete/${id}`);
+      await axios.delete(`${backend}/api/hero/delete/${id}`);
       fetchHeroes();
 
     } catch (error) {
@@ -110,7 +111,7 @@ const HeroManagement = () => {
     if (!window.confirm("Delete ALL hero products?")) return;
 
     try {
-      await axios.delete(`${BASE_URL}/clearall`);
+      await axios.delete(`${backend}/api/hero/clearall`);
       fetchHeroes();
     } catch (error) {
       console.error("Clear error:", error);

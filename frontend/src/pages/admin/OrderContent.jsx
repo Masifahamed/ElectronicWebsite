@@ -3,12 +3,12 @@ import React, { useEffect, useState, useRef } from "react";
 import axios from "axios";
 import { io } from "socket.io-client";
 import { Eye, RefreshCw, Trash2, Edit2 } from "lucide-react";
-import { getimagesrc } from "../../ultis/constant";
+import { backend, getimagesrc } from "../../ultis/constant";
 
 // API base
-const API = "http://localhost:3500/api";
+const API = `${backend}/api`;
 
-const socketUrl = "http://localhost:3500"; // same origin as socket server
+const socketUrl = backend;  // same origin as socket server
 
 const OrdersContent = () => {
   const [orders, setOrders] = useState([]);
@@ -64,7 +64,7 @@ const OrdersContent = () => {
   const deletealleorder = async () => {
      if (!window.confirm("Are you sure want to delete all Orders")) return
     try {
-        const res = await axios.delete("http://localhost:3500/api/order/deleteorder")
+        const res = await axios.delete(`${backend}/api/order/deleteorder`)
         setOrders(res.data.data)
       
     } catch (err) {

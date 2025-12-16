@@ -1,13 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Plus, Edit, Trash2, Star } from 'lucide-react';
+import { Plus, Edit, Trash2, Star, RefreshCw } from 'lucide-react';
+import { backend } from '../../ultis/constant';
 
-const API = 'http://localhost:3500/api/product'; // backend base URL
+const API = `${backend}/api/product`; // backend base URL
 
 const ProductsContent = () => {
   const [products, setProducts] = useState([]);
   const [isEditing, setIsEditing] = useState(false);
   const [currentProduct, setCurrentProduct] = useState(null);
+  const[loading,setLoading]=useState(true)
   const [showProductForm, setShowProductForm] = useState(false);
   const [productForm, setProductForm] = useState({
     productname: '',
@@ -28,6 +30,7 @@ const ProductsContent = () => {
   }, []);
 
   const loadProducts = async () => {
+    setLoading(true)
     try {
       const res = await axios.get(API);
       // backend sometimes returns { count, data } or directly an array/object
@@ -36,6 +39,8 @@ const ProductsContent = () => {
     } catch (err) {
       console.error('Failed to load products:', err);
       setProducts([]);
+    }finally{
+      setLoading(false)
     }
   };
 
@@ -190,13 +195,13 @@ const ProductsContent = () => {
             <Plus size={20} className="mr-2" />
             Add Product
           </button>
-          {/* <button
-            onClick={refreshProductRating}
-            className="text-sm px-3 py-2 border rounded-lg"
-          >
-            Refresh Ratings
-          </button> */}
         </div>
+        <button
+            onClick={loadProducts}
+            className="px-3 py-2 bg-gray-100 rounded-md hover:bg-gray-200 flex items-center gap-2"
+          ><RefreshCw className='w-4 h-4'/>
+            Refresh 
+          </button>
       </div>
 
       {showProductForm && (

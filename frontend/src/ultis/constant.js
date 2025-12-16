@@ -3,6 +3,8 @@ import speakerurl from '../assets/speaker.png'
 
 export const textgradient="pb-3 text-4xl md:text-5xl lg:text-6xl font-pop font-bold bg-gradient-to-r from-[#1600A0] to-[#9B77E7] bg-clip-text text-transparent"
 
+export const backend = "http://localhost:3500"
+
 export const speaker={
   speakerimage:speakerurl
 }

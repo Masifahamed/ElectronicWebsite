@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import { backend } from "../../ultis/constant";
 
 const NewArrival = () => {
     const [products, setProducts] = useState([]);
@@ -26,7 +27,7 @@ const NewArrival = () => {
 
     const fetchProducts = async () => {
         try {
-            const response = await axios.get(`${API_URL}/allproduct`);
+            const response = await axios.get(`${backend}/api/arrival/allproduct`);
 
             if (response.data.success === true) {
                 setProducts(response.data.data);
@@ -63,11 +64,11 @@ const NewArrival = () => {
 
             if (editingId) {
                 // Update
-                await axios.put(`${API_URL}/updateproduct/${editingId}`, productData);
+                await axios.put(`${backend}/api/arrival/updateproduct/${editingId}`, productData);
                 alert("Product updated successfully!");
             } else {
                 // Create
-                await axios.post(`${API_URL}/createproduct`, productData);
+                await axios.post(`${backend}/api/arrival/createproduct`, productData);
                 alert("Product added successfully!");
             }
 
@@ -98,7 +99,7 @@ const NewArrival = () => {
     const handleDelete = async (id) => {
         if (!window.confirm("Are you sure you want to delete this product?")) return;
         try {
-            await axios.delete(`${API_URL}/deleteproduct/${id}`);
+            await axios.delete(`${backend}/api/arrival/deleteproduct/${id}`);
             fetchProducts();
         } catch (error) {
             console.error("Error deleting product:", error);

@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { BarChart3, Package, Users, ShoppingCart, Plus } from 'lucide-react';
 import { NavLink } from 'react-router-dom';
+import { backend } from '../../ultis/constant';
 
 const DashboardContent = () => {
   const [stats, setStats] = useState({
@@ -20,17 +21,17 @@ const DashboardContent = () => {
   const loadStats = async () => {
     try {
       // ------- 1. Load Product Count --------
-      const productRes = await fetch("http://localhost:3500/api/product");
+      const productRes = await fetch(`${backend}/api/product`);
       const productData = await productRes.json();
       const products = productData?.data ?? [];
 
       // ------- 2. Load All Users --------
-      const userRes = await fetch("http://localhost:3500/api/user/getuser");
+      const userRes = await fetch(`${backend}/api/user/getuser`);
       const userData = await userRes.json();
       const users = userData?.data ?? [];
 
       // ------- 3. Load All Orders --------
-      const orderRes = await fetch("http://localhost:3500/api/order/orderlist");
+      const orderRes = await fetch(`${backend}/api/order/orderlist`);
       const orderData = await orderRes.json();
       const orders = orderData?.data?? [];
 

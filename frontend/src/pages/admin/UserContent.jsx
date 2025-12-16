@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { backend } from '../../ultis/constant';
 
 const UsersContent = () => {
   const [users, setUsers] = useState([]);
 
   const loadUsers = async () => {
     try {
-      const res = await axios.get("http://localhost:3500/api/user/getuser");
+      const res = await axios.get(`${backend}/api/user/getuser`);
       setUsers(res.data.data || []); // matches your backend response
     } catch (err) {
       console.log(err);
@@ -20,7 +21,7 @@ const UsersContent = () => {
   const handleDeleteUser = async (id) => {
     if (window.confirm("Are you sure you want to delete this user?")) {
       try {
-        await axios.delete(`http://localhost:3500/api/user/deleteuser/${id}`);
+        await axios.delete(`${backend}/api/user/deleteuser/${id}`);
         setUsers(users.filter(user => user._id !== id));
       } catch (err) {
         console.log("Delete error:", err);

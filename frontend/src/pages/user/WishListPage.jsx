@@ -5,6 +5,9 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "../auth/WithAuth";
 import axios from "axios";
 import SuccessPopup from '../../components/user/SuccessPopup'
+import { backend } from "../../ultis/constant";
+
+
 
 const WishlistPage = () => {
   const [wishlistItems, setWishlistItems] = useState([]);
@@ -22,7 +25,7 @@ const WishlistPage = () => {
   const fetchWishlist = async () => {
     try {
       const res = await axios.get(
-        `http://localhost:3500/api/wishlist/single/${userId}`);
+        `${backend}/api/wishlist/single/${userId}`);
       //setWishlistItems(res.data.data.product)
 
       if (res.data?.data?.product) {
@@ -47,7 +50,7 @@ const WishlistPage = () => {
   // Remove item
   const removeFromWishlist = async (productId) => {
     try {
-      await axios.delete(`http://localhost:3500/api/wishlist/remove/${userId}/${productId}`);
+      await axios.delete(`${backend}/api/wishlist/remove/${userId}/${productId}`);
       setMessage("Product remove from wishlist")
       setPopup(true)
       //setWishlistItems((prev) => prev.filter((item) => item.productId !== productId));
@@ -64,7 +67,7 @@ const WishlistPage = () => {
   const moveToCart = async (product) => {
     try {
 
-      const res = await axios.post("http://localhost:3500/api/cart/add", {
+      const res = await axios.post(`${backend}/api/cart/add`, {
         userId: userId,
         productId: product._id,
         imageurl: product.imageurl,
@@ -298,13 +301,13 @@ const WishlistPage = () => {
 
                   {/* Added Date */}
                   <div className="text-xs text-gray-500 text-center mt-3">
-                    Added on {new Date(product.addedDate).toLocaleString("en-IN",{
-                      day:"2-digit",
-                      month:"short",
-                      year:"numeric",
-                      hour:"numeric",
-                      minute:"numeric"
-                      
+                    Added on {new Date(product.addedDate).toLocaleString("en-IN", {
+                      day: "2-digit",
+                      month: "short",
+                      year: "numeric",
+                      hour: "numeric",
+                      minute: "numeric"
+
                     }).toUpperCase()}
                   </div>
                 </div>

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import SuccessPopup from './../SuccessPopup'
 import Speaker from '../../../assets/speaker.png';
+import { backend } from '../../../ultis/constant';
 
 const ProductPoster = () => {
   const [timeLeft, setTimeLeft] = useState({
@@ -23,7 +24,7 @@ const ProductPoster = () => {
 
   const loadCart = async () => {
     try {
-      const res = await axios.get(`http://localhost:3500/api/cart/single/${userId}`)
+      const res = await axios.get(`${backend}/api/cart/single/${userId}`)
       setCart(res.data.data.cartlist);
       setLoading(true)
     } catch (err) {
@@ -41,7 +42,7 @@ const ProductPoster = () => {
       //const cart = JSON.parse(localStorage.getItem('cart') || '[]');
 
       // Check if product already exists in cart
-      const res = await axios.post("http://localhost:3500/api/cart/add", {
+      const res = await axios.post(`${backend}/api/cart/add`, {
         userId: userId,
         productId: product._id,
         imageurl: product.imageurl,
@@ -78,13 +79,13 @@ const ProductPoster = () => {
     if (imageurl.startsWith("http")) {
       return imageurl
     }
-    return `http://localhost:3500${imageurl}`
+    return `${backend}${imageurl}`
   }
   // Load hero/poster data
   useEffect(() => {
     const loadposter = async () => {
       try {
-        const res = await axios.get("http://localhost:3500/api/poster/");
+        const res = await axios.get(`${backend}/api/poster/`);
         if (res.data.data) {
 
           const data = res.data.data;

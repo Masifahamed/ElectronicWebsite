@@ -4,6 +4,7 @@ import { User, Mail, Lock, Eye, EyeOff, Save, Edit2, X, Calendar, ShoppingBag, H
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import axios from "axios";
+import { backend } from "../../ultis/constant";
 //import PopupMessage from "../../components/user/PopupMessage";
 
 const ProfilePage = () => {
@@ -31,7 +32,7 @@ const ProfilePage = () => {
   const navigate = useNavigate();
 
   const firstNameInputRef = useRef(null);
-  const API_BASE_URL = "http://localhost:3500/api/user";
+  
 
   // Load user data when component mounts
   useEffect(() => {
@@ -95,7 +96,7 @@ const ProfilePage = () => {
       const token = getAuthToken();
       const currentUserId = getUserId();
 
-      const response = await fetch(`${API_BASE_URL}/getsingleuser/${currentUserId}`, {
+      const response = await fetch(`${backend}/api/user/getsingleuser/${currentUserId}`, {
         method: "GET",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -121,7 +122,7 @@ const ProfilePage = () => {
       const token = getAuthToken();
       const currentUserId = getUserId();
 
-      const response = await fetch(`${API_BASE_URL}/updateuser/${currentUserId}`, {
+      const response = await fetch(`${backend}/api/user/updateuser/${currentUserId}`, {
         method: "PUT",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -162,7 +163,7 @@ const ProfilePage = () => {
   const fetchorder = async (userinfo) => {
     try {
 
-      const res = await axios.get(`http://localhost:3500/api/order/${userinfo}`)
+      const res = await axios.get(`${backend}/api/order/${userinfo}`)
       const orderlist = res.data.data.map((order) => ({
         //orderId: order.orderId,
         items: order.ordersummary?.items,
@@ -301,7 +302,7 @@ const ProfilePage = () => {
   const wishlistsetup = async () => {
     try {
       //const userId = getUserId()
-      const res = await axios.get(`http://localhost:3500/api/wishlist/single/${userinfo}`)
+      const res = await axios.get(`${backend}/api/wishlist/single/${userinfo}`)
       const formatted = res.data.data.product.map((p) => ({
         ...p,
         rating: p.rating && p.rating <= 5 ? p.rating : Math.floor(Math.random() * 5) + 1,

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { backend } from "../../../ultis/constant";
 
 const ArrivalNew = () => {
   const navigate = useNavigate();
@@ -21,7 +22,7 @@ const ArrivalNew = () => {
     const fetchArrivalProducts = async () => {
       try {
         const res = await axios.get(
-          "http://localhost:3500/api/arrival/allproduct"
+          `${backend}/api/arrival/allproduct`
         );
 
         // Only first 4 products for layout
@@ -40,7 +41,7 @@ const ArrivalNew = () => {
   const handleShopNow = async (product) => {
     try {
 
-      await axios.post("http://localhost:3500/api/cart/add", {
+      await axios.post(`${backend}/api/cart/add`, {
         userId: userId,
         productId: product._id,
         imageurl: product.imageurl,

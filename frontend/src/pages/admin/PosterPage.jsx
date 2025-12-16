@@ -3,7 +3,9 @@ import { Save, Upload, Clock, Tag, Headphones, Speaker } from 'lucide-react';
 import axios from 'axios';
 //import { speaker } from '../../ultis/constant';
 import speaker from '../../assets/speaker.png';
-const API_Poster = "http://localhost:3500/api/poster"
+import { backend } from '../../ultis/constant';
+
+const API_Poster = `${backend}/api/poster`
 
 const PosterPage = () => {
   const [heroData, setHeroData] = useState({
@@ -40,7 +42,7 @@ const PosterPage = () => {
           setHeroData(res.data.data);
 
           if (res.data.data.imageurl) {
-            setPreviewUrl(`http://localhost:3500${res.data.data.imageurl}`);
+            setPreviewUrl(`${backend}${res.data.data.imageurl}`);
           }
         }
       } catch (err) {
@@ -104,7 +106,7 @@ const PosterPage = () => {
         setHeroData(refreshed.data.data);
 
 
-        setPreviewUrl(`http://localhost:3500${refreshed.data.data.imageurl}`);
+        setPreviewUrl(`${backend}${refreshed.data.data.imageurl}`);
         // Update preview from backend
         //setImageFile(null); // Reset file
       }

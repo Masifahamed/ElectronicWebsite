@@ -4,8 +4,10 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { X, CheckCircle, ShoppingCart, Eye, Star, Heart, Share2, LoaderIcon } from 'lucide-react';
 import axios from 'axios';
 import SuccessPopup from './../SuccessPopup'
-const API_CART = "http://localhost:3500/api/cart"
-const API_HERO = "http://localhost:3500/api/hero"
+import { backend } from '../../../ultis/constant';
+
+const API_CART = `${backend}/api/cart`
+const API_HERO = `${backend}/api/hero`
 
 const Herosection = () => {
     const [showAuthPopup, setShowAuthPopup] = useState(false)

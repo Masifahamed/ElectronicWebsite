@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { Minus, Plus, ShoppingCart, Trash, ArrowRight, Star, SaveIcon } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import SuccessPopup from '../../components/user/SuccessPopup'
+import { backend } from '../../ultis/constant'
 
 
 
@@ -27,7 +28,7 @@ const OrderPage = () => {
     // Load cart items
     const loadCart = async () => {
         try {
-            const res = await axios.get(`${CartAPI}single/${userId}`);
+            const res = await axios.get(`${backend}/api/cart/single/${userId}`);
             setCart(res.data.data.cartlist || []);
         } catch (err) {
             console.log(err);
@@ -56,7 +57,7 @@ const OrderPage = () => {
         if (imageurl.startsWith("http")) {
             return imageurl
         }
-        return `http://localhost:3500${imageurl}`
+        return `${backend}${imageurl}`
     }
 
     // Decrease Qty
@@ -73,7 +74,7 @@ const OrderPage = () => {
     // Delete Item
     const deleteItem = async (productId) => {
         try {
-            await axios.delete(`${CartAPI}delete/${userId}/${productId}`);
+            await axios.delete(`${backend}/api/cart/delete/${userId}/${productId}`);
             await loadCart();
         } catch (err) {
             console.log("delete error", err);
@@ -143,11 +144,11 @@ const OrderPage = () => {
                 }
             };
 
-            const res = await axios.post(`${API_BASE}/api/order/createorder`, orderPayload);
+            const res = await axios.post(`${backend}/api/order/createorder`, orderPayload);
 
             // clear cart on backend
             if (res.data.success) {
-                await axios.delete(`http://localhost:3500/api/cart/deletecart/${userId}`);
+                await axios.delete(`${backend}/api/cart/deletecart/${userId}`);
                 // alert("Order Placed Successfully")
                 setmessage("Order Placed Successfully")
                 setShowPopup(true)
