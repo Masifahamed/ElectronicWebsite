@@ -30,7 +30,7 @@ app.use(express.json());
 
 
 app.use(cors({
-  origin: 'http://localhost:5173',
+  origin: 'https://frontend-e-commerce-website.onrender.com',
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS']
 }))
@@ -39,11 +39,15 @@ const server = http.createServer(app);
 
 const io = new Server(server, {
   cors: {
-    origin: "http://localhost:5173",
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS']
+    origin: "https://frontend-e-commerce-website.onrender.com",
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    credentials:true
   }
 })
 
+process.on("unhandledRejection",(err)=>{
+  console.log("this is went something wrong:",err)
+})
 // Routes
 app.use('/api/product', productroute);
 app.use('/api/order', orderroute)
@@ -75,25 +79,19 @@ app.get('/health', (req, res) => {
   res.json({
     status: 'OK',
     message: 'Backend API is running',
-    frontend: 'http://localhost:5173',
-    backend: `http://localhost:${process.env.PORT}`
+    frontend: 'https://frontend-e-commerce-website.onrender.com',
+    backend: `https://electronicwebsite-backend.onrender.com`
   })
 })
 
 // Database connection
 mongoose
   .connect(process.env.MONGODB_URL)
-.then(() => {
+.then(async() => {
     console.log('Database Connected Successfully!');
-    createDefaultadmin()
+    await createDefaultadmin()
     server.listen(process.env.PORT, () => {
       console.log(`Server is running on port ${process.env.PORT}`);
-      console.log(`frontend:http://localhost:5173`)
-      console.log(`Backend product API:http://localhost:${process.env.PORT}/api/product`)
-      console.log(`Backend order API:http://localhost:${process.env.PORT}/api/order`)
-      console.log(`Backend User API:http://localhost:${process.env.PORT}/api/user`)
-      console.log(`Backend wishlist:http://localhost:${process.env.PORT}/api/wishlist`)
-      console.log(`health check:http://localhost:${process.env.PORT}/health`)
     });
   })
   .catch((err) => {
