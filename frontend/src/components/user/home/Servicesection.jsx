@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import delivery from '../../../assets/delivery.png';
 import service from '../../../assets/Services.png';
-import authenticate from '../../../assets/authenticate.png';
+import authenticate from '../../../../src/assets/Authenticate.png';
 import ScrollUp from '../ScrollUp';
 
 
