@@ -99,7 +99,7 @@ export const getWishlist = async (req, res) => {
       })
     }
     return res.status(200).json({
-      message: "Wishlist created successfully",
+      message: "Wishlist get successfully",
       count: wishlist.length,
       data: wishlist
     });
@@ -121,6 +121,7 @@ export const getsinglewishlist = async (req, res) => {
     return res.status(200).json({
       message: "User wishlist fetched successfully",
       data: wishlist
+      
     })
   } catch (err) {
     return res.status(500).json({

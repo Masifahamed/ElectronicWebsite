@@ -53,6 +53,7 @@ export const getsingleproduct = async (req, res) => {
         const { id } = req.params
         console.log(id)
         const singleproduct = await ProductModel.findById(id)
+
         if (!singleproduct) {
             res.status(404).send({
                 message: "product not found"
@@ -72,6 +73,7 @@ export const updateproduct = async (req, res) => {
     try {
         const { id } = req.params;
         const updateproduct = await ProductModel.findByIdAndUpdate(id, req.body)
+        
         if (!updateproduct) {
             res.status(404).json({
                 message: 'product is not found'

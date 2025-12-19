@@ -14,9 +14,10 @@ import AdminRoute from './components/Admin/AdminRoute'
 import AuthMainPage from './pages/auth/AuthMainPage'
 import MainContent from './components/auth/MainContent'
 import { useAuth } from './pages/auth/WithAuth'
-//import { AuthProvider } from './context/AuthContext'
+import { AuthProvider } from './context/AuthContext'
 import PosterPage from './pages/admin/PosterPage'
 import NewArrival from './pages/admin/NewArrival'
+import SampleData from './pages/user/SampleData'
 
 //initializeDefaultAdmin()
 
@@ -51,7 +52,7 @@ const PublicRoute = ({ children }) => {
 };
 
   return (
-   // <AuthProvider>
+   <AuthProvider>
       <BrowserRouter>
       <Routes>
         {/* <Route path='/' element={<Navigate to="/auth/login" replace/>}/> */}
@@ -94,8 +95,10 @@ const PublicRoute = ({ children }) => {
         } />
         </Routes>
     </BrowserRouter>
-   // </AuthProvider>
-    
+   </AuthProvider>
+    // <>
+    // <SampleData/>
+    // </>
   )
 }
 

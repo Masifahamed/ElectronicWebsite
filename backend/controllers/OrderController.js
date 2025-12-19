@@ -31,6 +31,7 @@ export const createOrder = async (req, res) => {
       products,
       ordersummary,
     });
+    
      newOrder=await newOrder.populate("userId","first email phone")
     // notify only this user
     emitEvent(req, "order_created", {
@@ -262,70 +263,3 @@ export const deleteSingleOrder = async (req, res) => {
   }
 };
 
-
-// // In your OrderController or a separate service
-// export const updateUserProfileStats = async (userId) => {
-//   try {
-//     // Fetch user's orders from order API
-//     const userOrders = await orderModel.find({ userId: userId });
-
-//     // Calculate statistics
-//     const totalOrders = userOrders.length;
-//     const pendingOrders = userOrders.filter(order =>
-//       order.status === 'processing' || order.status === 'pending'
-//     ).length;
-//     const deliveredOrders = userOrders.filter(order =>
-//       order.status === 'delivered' || order.status === 'completed'
-//     ).length;
-//     const totalSpent = userOrders.reduce((sum, order) => {
-//       return sum + (order.total || 0);
-//     }, 0);
-
-//     // Update user profile
-//     await UserModel.findByIdAndUpdate(userId, {
-//       profile: {
-//         totalorder: totalOrders,
-//         pending: pendingOrders,
-//         delivery: deliveredOrders,
-//         totalspent: totalSpent
-//         // wishlist and totalvalue would be updated separately
-//       }
-//     });
-
-//     console.log(`Updated profile stats for user ${userId}`);
-
-//   } catch (error) {
-//     console.error('Error updating user profile stats:', error);
-//   }
-// };
-
-// export const getOrderSummary = async (req, res) => {
-//   try {
-//     const totalOrders = await orderModel.countDocuments();
-//     const orders = (await orderModel.find().populate("product.productId")).toSorted({ data: -1 });
-//     res.json({
-//       totalOrders,
-//       orders
-//     })
-//   } catch (error) {
-//     res.status(500).json({ error: error.message })
-//   }
-// }
-
-// export const activeOrder = async (req, res) => {
-//   try {
-//     const orders = await orderModel
-//       .find({ status: "Active" })
-//       .populate("products.productId")
-//       .sort({ date: -1 });
-
-//     res.json(orders);
-//   } catch (error) {
-//     res.status(500).json({ message: error.message });
-//   }
-// };
-
-// export const updateorderstatus = async (req, res) => {
-//   await orderModel.findByIdAndUpdate(req.params.id, { status: req.body.status });
-//   res.json({ message: "Status updated" });
-// };

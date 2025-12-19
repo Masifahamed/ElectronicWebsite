@@ -22,24 +22,29 @@ const OrdersContent = () => {
     fetchOrders();
 
     // setup socket
-    socketRef.current = io(socketUrl, { transports: ["websocket"] });
+    const socket=io(socketUrl);
 
-    socketRef.current.on("order_connect", (order) => {
-      console.log("Admin socket connected:", socketRef.current.id);
-      setOrders((prev) => [order, ...prev])
+    socketRef.current = socket
+
+    socket.on("connect",() => {
+      //console.log("Admin socket connected:", socketRef.current.id);
+      //console.log("Socket connected:",socket.id)
     });
 
     // listen for events — refresh or update relevant order(s)
-    socketRef.current.on("order_created", (order) => {
+    socket.on("order_created", (order) => {
       setOrders(prev => [order, ...prev]);
     });
-    socketRef.current.on("order_status_updated", ({ orderId, order }) => {
+    socket.on("order_status_updated", ({ orderId, order }) => {
       setOrders(prev => prev.map(o => (o.orderId === orderId ? order : o)));
     });
 
+    socket.on("connect_error",(err)=>{
+      console.log("Sockect connecttion error:",err.message)
+    })
 
     return () => {
-      if (socketRef.current) socketRef.current.disconnect();
+    socket.disconnect();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -73,6 +78,16 @@ const OrdersContent = () => {
   }
 
 
+const getStatusColor = (status) => {
+    switch (status) {
+      case "Pending": return "bg-yellow-100 text-yellow-700";
+      case "Packing": return "bg-blue-100 text-blue-700";
+      case "Shipped": return "bg-orange-100 text-orange-700";
+      case "Delivered": return "bg-green-100 text-green-700";
+      case "Cancelled": return "bg-red-100 text-red-700";
+      default: return "bg-gray-100 text-gray-700";
+    }
+  };
 
   const deletesingleorder = async (userId, orderId) => {
     if (!confirm("Delete this order?")) return;
@@ -176,7 +191,7 @@ const OrdersContent = () => {
                     </td>
 
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <span className={`px-2 py-1 rounded-full text-xs font-semibold `}>
+                      <span className={`p-2 rounded-full text-lg ${getStatusColor(o.ordersummary?.status)}`}>
                         {o.ordersummary?.status || "Pending"}
                       </span>
                     </td>
@@ -220,7 +235,7 @@ const OrdersContent = () => {
                   value={selected.ordersummary?.status}
                   onChange={(e) => updateStatus(selected.orderId, e.target.value)}
                   disabled={statusUpdating}
-                  className="border rounded-md px-3 py-2"
+                  className={`border rounded-md px-3 py-2`}
                 >
                   {statusOptions.map((s) => <option key={s} value={s}>{s}</option>)}
                 </select>

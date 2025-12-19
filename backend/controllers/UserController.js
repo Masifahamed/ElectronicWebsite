@@ -27,7 +27,7 @@ export const createUser = async (req, res) => {
             //confirmPassword: undefined, // ❌ Do not store this
             role: "user"
         });
-        console.log(user)
+       console.log(user)
         res.status(201).json({
             message: "User registered successfully",
             user: {
@@ -43,7 +43,8 @@ export const createUser = async (req, res) => {
 
 export const getUser = async (req, res) => {
     try {
-        const finduser = await UserModel.find({role:"user"}).select('-password -confirmPassword'); // Exclude passwords
+        const finduser = await UserModel.find({role:"user"})
+        .select('-password -confirmPassword') // Exclude passwords
 
         if (!finduser || finduser.length === 0) { // FIXED: Proper empty check
             return res.status(404).json({ // FIXED: Added return
@@ -122,7 +123,7 @@ export const updateUser = async (req, res) => {
                 new: true, // Return updated document
                 runValidators: true // Run schema validations
             }
-        ).select('+password +confirmPassword'); // Exclude passwords from response
+        ).select('+password +confirmPassword'); // include passwords from response
 
         if (!updateUser) {
             return res.status(404).json({
@@ -156,64 +157,6 @@ export const updateUser = async (req, res) => {
     }
 }
 
-// export const updateUser=async(req,res)=>{
-//     try{
-//         const {id}=req.params
-//         const {currentPassword,password,confirmPassword,...otherData}=req.body
-
-//         const user=await UserModel.findById(id)
-//         if(!user){
-//             return res.status(404).json({
-//                 message:"Iser not found"
-//             })
-//         }
-//         if(password){
-//             if(!currentPassword){
-//                 return res.status(400).json({
-//                     message:"Current password is required to update password"
-//                 })
-//             }
-//             const isMatch=await bcrypt.compare(currentPassword,user.password);
-//             if(!isMatch){
-//                 return res.status(400).json({
-//                     message:"Current password is required"
-//                 })
-//             }
-//             if(password!==confirmPassword){
-//                 return res.status(400).json({
-//                     message:"New password & confirm password do not match"
-//                 })
-//             }
-//             user.password=await bcrypt.hash(password,10)
-//         }
-//         if(otherData.profile){
-//             user.profile={
-//                 ...user.profile,
-//                 ...otherData.profile
-//             }
-//         }
-//         Object.assign(user,otherData);
-//         await user.save()
-//         const safeUser=user.toObject();
-//         delete safeUser.password;
-
-//         return res.status(200).json({
-//             success:true,
-//             message:"User update successfully",
-//             data:safeUser
-//         })
-//     }catch(err){
-//         console.log("updateUser Error:",err.message)
-//         if(err.code===11000){
-//             return res.status(400).json({
-//                 message:"Email already exists!"
-//             })
-//         }
-//         return res.status(500).json({
-//             message:err.message
-//         })
-//     }
-// }
 
 export const deleteUser = async (req, res) => {
     try {

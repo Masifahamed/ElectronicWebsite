@@ -266,9 +266,9 @@ const ProductPage = () => {
     })
     loadCart()
   }
-// const decrease=()=>{
-// setQuantity(prev=> prev-1)
-// }
+  // const decrease=()=>{
+  // setQuantity(prev=> prev-1)
+  // }
 
   // Handle search input change
   const handleSearchChange = (e) => {
@@ -426,6 +426,7 @@ const ProductPage = () => {
           <div className="flex justify-center mt-10">
             <div className="w-60 relative">
               <form onSubmit={handleSearch} className='flex items-center bg-gray-100 rounded-full px-3 py-1'>
+
                 <input
                   type="text"
                   placeholder='Search Products...'
@@ -436,6 +437,8 @@ const ProductPage = () => {
                 <button type="submit">
                   <Search className='text-gray-500 w-5 h-5 hover:text-blue-500 transition' />
                 </button>
+
+
               </form>
 
               {searchQuery && (
@@ -835,6 +838,7 @@ const ProductPage = () => {
           </motion.div>
         )}
       </AnimatePresence>
+
     </div>
   );
 };

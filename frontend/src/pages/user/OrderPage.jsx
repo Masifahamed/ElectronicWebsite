@@ -203,7 +203,7 @@ const OrderPage = () => {
                             >
                                 <div className="flex items-center gap-4">
                                     <img
-                                        src={getimagesrc(item.imageurl)}
+                                        src={getimagesrc(item.imageurl)||item.imageurl}
                                         alt={item.productname}
                                         className="w-24 h-24 rounded-lg object-cover"
                                     />

@@ -32,12 +32,13 @@ const ProfilePage = () => {
   const navigate = useNavigate();
 
   const firstNameInputRef = useRef(null);
-  
+
 
   // Load user data when component mounts
   useEffect(() => {
     loadUserData();
   }, []);
+
 
   const user = JSON.parse(localStorage.getItem("auth_user"))
   const userinfo = user._id
@@ -64,12 +65,12 @@ const ProfilePage = () => {
 
       if (userInfo) {
         const user = JSON.parse(userInfo);
-        console.log("Parsed user info:", user);
+        //console.log("Parsed user info:", user);
         if (user._id) return user._id;
         if (user.id) return user.userId;
         if (user.userId) return user.userId;
         if (user.user && user.user._id) return user.user._id;
-        console.log("No user ID found in user info:", user)
+        //console.log("No user ID found in user info:", user)
       }
       return null;
     } catch (error) {
@@ -149,14 +150,14 @@ const ProfilePage = () => {
       subtotal: 0,
       totalprice: 0,
       saving: 0,
-      address:""
+      address: ""
     }
     orders.forEach(order => {
       totals.items += order.items || 0;
       totals.subtotal += order.subtotal || 0;
       totals.totalprice += order.totalprice;
       totals.saving += order.saving || 0;
-      totals.address += order.address||"Address is not provide"
+      totals.address += order.address || "Address is not provide"
     });
     return totals
   }
@@ -170,7 +171,7 @@ const ProfilePage = () => {
         subtotal: order.ordersummary?.subtotal,
         totalprice: order.ordersummary?.totalprice,
         saving: order.ordersummary?.saving,
-       // products: order.products,
+        // products: order.products,
         //date: order.ordersummary?.data,
         //status: order.ordersummary?.status,
         address: order.ordersummary?.address,
@@ -184,7 +185,7 @@ const ProfilePage = () => {
     }
   }
 
-  
+
 
   useEffect(() => {
     const loadorder = async () => {
@@ -199,50 +200,40 @@ const ProfilePage = () => {
   const loadUserData = async () => {
     try {
       setIsLoading(true);
-      const response = await fetchUserData();
-
-      if (response) {
-        // Handle different response structures
-        const user = response;
-
-        // console.log("Processing user data:", user);
-
-        if (user) {
-          // Set basic user data
-          setUserData({
-
-            first: user.first || "",
-            last: user.last || "",
-            email: user.email || "",
-            phone: user.phone || ""
-          });
-
-          setUserId(user._id)
+      const user = await fetchUserData();
 
 
-          // Set member since date
-          const registrationDate = user.createdAt || new Date().toISOString();
-          setMemberSince(new Date(registrationDate).toLocaleDateString('en-IN', {
-            year: 'numeric',
-            month: 'long',
-          }));
 
-
-          setUserId(user._id);
-          // Set order statistics from profile object
-
-
-          setMemberSince(
-            new Date(user.createdAt).toLocaleDateString("en_IN", {
-              month: "long",
-              year: "numeric",
-            })
-          )
-        }
-      } else {
-        console.log("No user data received from API");
+      // console.log("Processing user data:", user);
+      if (!user) {
+        console.log("no user data recieved from API")
+        return
       }
-    } catch (err) {
+      // Set basic user data
+      setUserData({
+
+        first: user.first || "",
+        last: user.last || "",
+        email: user.email || "",
+        phone: user.phone || ""
+      });
+
+      setUserId(user._id)
+
+
+      // Set member since date
+      // const registrationDate = user.addedDate|| new Date().toISOString();
+
+      setMemberSince(new Date(user.addedDate).toLocaleString('en-IN', {
+        day: "2-digit",
+        year: 'numeric',
+        month: 'long',
+      }));
+
+      // Set order statistics from profile object
+
+    }
+    catch (err) {
       console.log("Error loading user data:", err);
       //toast.error("Failed to load profile data. Please login again.");
       //<PopupMessage message={"Failed to load Profile Data.Please login again"} />
@@ -523,7 +514,7 @@ const ProfilePage = () => {
               {wishlistStats.length} {wishlistStats.length === 1 ? "item" : "items"} saved
             </div>
           </div>
-          {wishlistStats.length > 0 && (
+          
             <div className="grid grid-cols-2 gap-4">
               <div className="text-center p-4 bg-gray-50 rounded-lg">
                 <p className="text-2xl font-bold text-red-500">{wishlistStats.length}</p>
@@ -534,8 +525,7 @@ const ProfilePage = () => {
                 <p className="text-sm text-gray-600">Total Value</p>
               </div>
             </div>
-          )
-          }
+         
         </div>
 
         {/* Profile Form Card - FIXED: Removed isRegistration references */}
