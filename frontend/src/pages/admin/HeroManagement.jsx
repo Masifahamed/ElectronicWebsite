@@ -11,7 +11,7 @@ import {
 } from "lucide-react";
 import { backend } from "../../ultis/constant";
 
-const BASE_URL = "http://localhost:3500/api/hero";
+const BASE_URL = `${backend}/api/hero`;
 
 const HeroManagement = () => {
   const [heroes, setHeroes] = useState([]);

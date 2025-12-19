@@ -18,7 +18,7 @@ const NewArrival = () => {
 
     const [editingId, setEditingId] = useState(null);
 
-    const API_URL = "http://localhost:3500/api/arrival";
+  
 
     // Fetch Products
     useEffect(() => {

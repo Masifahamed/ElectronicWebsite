@@ -5,6 +5,7 @@ import { Eye, EyeOff, Mail, Lock } from 'lucide-react';
 import axios from 'axios';
 import { useAuth } from './WithAuth';
 import SuccessPopup from '../../components/user/SuccessPopup'
+import { backend } from '../../ultis/constant';
 
 const Login = () => {
   const [formData, setFormData] = useState({ email: '', password: '' });
@@ -27,7 +28,7 @@ const handleChange = (e) => {
 
     try {
       const res = await axios.post(
-        "http://localhost:3500/api/login/checklogin",
+        `${backend}/api/login/checklogin`,
         formData
       );
       // Backend Response

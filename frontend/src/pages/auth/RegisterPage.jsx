@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Eye, EyeOff, Mail, Lock, User, Phone } from 'lucide-react';
+import { backend } from '../../ultis/constant';
 
 const Register = () => {
   const [formData, setFormData] = useState({
@@ -91,7 +92,7 @@ const Register = () => {
         confirmPassword: formData.confirmPassword
       };
 
-      const res = await fetch("http://localhost:3500/api/user/newuser", {
+      const res = await fetch(`${backend}/api/user/newuser`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json"

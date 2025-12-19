@@ -8,9 +8,6 @@ import { backend } from '../../ultis/constant'
 
 
 
-const CartAPI = "http://localhost:3500/api/cart/";
-const API_BASE = "http://localhost:3500"
-
 const OrderPage = () => {
     const navigate = useNavigate()
     const [cart, setCart] = useState([]);
@@ -45,7 +42,7 @@ const OrderPage = () => {
     // Increase Qty
     const increaseQuantity = async (productId) => {
         try {
-            await axios.post(`${CartAPI}increase`, { userId, productId });
+            await axios.post(`${backend}/api/cart/increase`, { userId, productId });
             await loadCart();
         } catch (err) {
             console.log("increase error", err);
@@ -64,7 +61,7 @@ const OrderPage = () => {
     const decreaseQuantity = async (productId, quantity) => {
         //if (quantity <= 1) return;
         try {
-            await axios.post(`${CartAPI}decrease`, { userId, productId, quantity });
+            await axios.post(`${backend}/api/cart/decrease`, { userId, productId, quantity });
             await loadCart();
         } catch (err) {
             console.log("decrease error", err);
