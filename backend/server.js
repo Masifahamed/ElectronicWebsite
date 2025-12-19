@@ -68,7 +68,9 @@ io.on('connection', (socket) => {
   });
 });
 
-
+app.get("/",(req,res)=>{
+  res.send("<h1>happy coding...</h1>")
+})
 
 //app.use("api/payment",paymentRoutes)
 app.get('/health', (req, res) => {
