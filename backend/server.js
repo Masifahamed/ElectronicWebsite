@@ -30,16 +30,17 @@ app.use(express.json());
 
 
 app.use(cors({
-  origin: 'https://frontend-rm49.onrender.com',
+  origin: 'http://localhost:5173',
   credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS']
 }))
 
 const server = http.createServer(app);
 
 const io = new Server(server, {
   cors: {
-    origin: "https://frontend-rm49.onrender.com",
-    credentials: true
+    origin: "http://localhost:5173",
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS']
   }
 })
 
@@ -52,13 +53,13 @@ app.use('/api/cart', cartroute)
 app.use("/api/login", loginroutes)
 app.use('/api/hero', herorouter)
 app.use('/api/poster', posterrouter)
-app.use("/uploads", express.static(path.join(process.cwd(), "uploads")));
-app.use('/api/arrival', Arrivalroute)
+app.use("/uploads", express.static(path.join(process.cwd(),"uploads")));
+app.use('/api/arrival',Arrivalroute)
 //app.use('/api/payment',paymentRoutes)
-app.set('io', io);
+app.set('io',io);
 
 io.on('connection', (socket) => {
-  socket.on("join_room", (userId) => {
+  socket.on("join_room",(userId)=>{
     socket.join(userId)
   })
   console.log('Socket connected:', socket.id);
@@ -67,23 +68,22 @@ io.on('connection', (socket) => {
   });
 });
 
-app.get("/", (req, res) => {
-  res.send("<h1>happy coding...</h1>")
-})
+
 
 //app.use("api/payment",paymentRoutes)
 app.get('/health', (req, res) => {
   res.json({
     status: 'OK',
     message: 'Backend API is running',
-    environment: process.env.NODE_ENV || "Production"
+    frontend: 'http://localhost:5173',
+    backend: `http://localhost:${process.env.PORT}`
   })
 })
 
 // Database connection
 mongoose
   .connect(process.env.MONGODB_URL)
-  .then(() => {
+.then(() => {
     console.log('Database Connected Successfully!');
     createDefaultadmin()
     server.listen(process.env.PORT, () => {
