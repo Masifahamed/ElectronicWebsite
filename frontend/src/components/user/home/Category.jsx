@@ -3,7 +3,7 @@ import phone from '../../../assets/phonesale.png'
 import computer from '../../../assets/Computer.png'
 import Gamepad from '../../../assets/Gamepad.png'
 import smartwatch from '../../../assets/SmartWatch.png'
-import headphone from '../../../assets/HeadPhone.png'
+import headphone from '../../../assets/Headphone.png'
 import { Camera, Type } from 'lucide-react'
 import { useRef } from 'react'
 
