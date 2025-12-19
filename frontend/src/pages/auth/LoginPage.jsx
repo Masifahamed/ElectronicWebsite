@@ -36,6 +36,7 @@ const handleChange = (e) => {
       //console.log(user,"good masif ahamed jknfsjfns kjncjscsjjbcs")
       //console.log(token)
       // Save login details
+    
       localStorage.setItem("auth_token", token);
       localStorage.setItem("auth_user", JSON.stringify(user));
 
