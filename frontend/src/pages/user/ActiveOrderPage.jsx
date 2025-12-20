@@ -207,10 +207,6 @@ const ActiveOrder = () => {
                         <span className="text-gray-600">Subtotal</span>
                         <span>₹{order.ordersummary?.subtotal?.toLocaleString("en-IN")}</span>
                       </div>
-                      <div className="flex justify-between">
-                        <span className="text-gray-600">Tax</span>
-                        <span>₹{order.ordersummary?.tax?.toLocaleString("en-IN")}</span>
-                      </div>
                       <div className="flex justify-between font-semibold pt-1 border-t">
                         <span>Total</span>
                         <span>₹{order.ordersummary?.totalprice?.toLocaleString("en-IN")}</span>
@@ -226,8 +222,8 @@ const ActiveOrder = () => {
                     </p>
                     <div className="text-xs sm:text-sm">
                       <p className="text-gray-600">
-                        Payment: <span className="font-medium text-gray-800">
-                          {order.ordersummary?.paymentmethod}
+                        Total  Payment: <span className="font-medium text-gray-800">
+                          {order.ordersummary?.totalprice?.toLocaleString("en-IN")}
                         </span>
                       </p>
                     </div>
