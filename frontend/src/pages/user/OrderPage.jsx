@@ -357,6 +357,10 @@ const OrderPage = () => {
                                 </motion.div>
                             ))}
                         </AnimatePresence>
+                        {showPopup && (
+                            <SuccessPopup title={message === "Order Placed Successfully" ? "success" : ""} />
+                        )
+                        }
                     </div>
 
                     {/* Order Summary */}
@@ -367,7 +371,7 @@ const OrderPage = () => {
 
                         <div className="space-y-2 sm:space-y-3 text-sm sm:text-base md:text-lg">
                             <div className="flex justify-between">
-                                <span className="text-gray-700">Subtotal ({cart.length} items)</span>
+                                <span className="text-gray-700">Subtotal</span>
                                 <span className="font-medium">
                                     ₹{subtotal.toLocaleString("en-IN")}
                                 </span>
@@ -388,7 +392,7 @@ const OrderPage = () => {
                             <hr className="my-2 sm:my-3" />
 
                             <div className="flex justify-between text-base sm:text-lg md:text-xl font-bold text-purple-700">
-                                <span>Total</span>
+                                <span>Total ({cart.length} items)</span>
                                 <span>₹{totalprice.toLocaleString("en-IN")}</span>
                             </div>
                         </div>
@@ -418,11 +422,7 @@ const OrderPage = () => {
                                 {/* Add more payment buttons here if needed */}
                             </div>
                         </div>
-                        {
-                            showPopup && (
-                                <SuccessPopup onClick={() => setShowPopup(false)} title={message} bgcolor={"success"} />
-                            )
-                        }
+
                         {/* Address */}
                         {showAddressForm && (
                             <div className="bg-white shadow-sm sm:shadow p-3 sm:p-4 md:p-5 rounded-lg">
@@ -465,14 +465,12 @@ const OrderPage = () => {
                             </div>
                         )}
 
-                        {
-                            message && (
-                                <p className='text-center text-lg font-medium mt-4 text-blue-600'>
-                                    {message}
-                                </p>
-                            )
-                        }
-
+                        {message && (
+                            <p className={`text-center text-sm sm:text-base md:text-lg font-medium py-2 sm:py-3 px-4 rounded-lg
+            ${message.includes("Order Placed Successfully") ? "bg-green-50 text-green-700" : "bg-blue-50 text-blue-600"}`}>
+                                {message}
+                            </p>
+                        )}
                     </div>
                 </div>
             )}
