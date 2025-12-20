@@ -357,6 +357,7 @@ const OrderPage = () => {
                                 </motion.div>
                             ))}
                         </AnimatePresence>
+                        
                         {showPopup && (
                             <SuccessPopup title={message === "Order Placed Successfully" ? "success" : ""} />
                         )
