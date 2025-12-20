@@ -25,11 +25,18 @@ const handleChange = (e) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+ const payload={
+  email:formData.email.trim().toLocaleLowerCase(),
+  password:formData.password.trim()
+ }
     try {
       const res = await axios.post(
         `${backend}/api/login/checklogin`,
-        formData
+       payload,{
+        headers:{
+          "Content-Type":"application/json"
+        }
+       }
       );
       // Backend Response
       const { token, user, message } = res.data;
@@ -43,7 +50,7 @@ const handleChange = (e) => {
       
       // ADMIN LOGIN
       if (user.role ==="admin") {
-      setPopupMessage("welcome admin masif")
+      setPopupMessage("welcome admin masif"||(`${user.first}`))
         setShowPopup(true)
         setTimeout(() => {
           setShowPopup(false)
