@@ -188,45 +188,55 @@ const OrderPage = () => {
                     </button>
                 </div>
             ) : (
-                <div className='w-full max-w-6xl mx-auto px-3 sm:px-4 lg:px-0'>
+                <div className="w-full max-w-6xl mx-auto px-3 sm:px-4 lg:px-0">
                     <AnimatePresence>
                         {cart.map((item) => (
                             <motion.div
                                 key={String(item.productId)}
-                                initial={{ opacity: 0, scale: 0.9 }}
+                                initial={{ opacity: 0, scale: 0.95 }}
                                 animate={{ opacity: 1, scale: 1 }}
                                 exit={{ opacity: 0 }}
-                                className="flex flex-col bg-white p-4 sm:p-5 rounded-2xl shadow-md mb-4 flex flex-col lg:items-center lg:justify-between gap-4"
+                                className="bg-white p-4 sm:p-5 rounded-2xl shadow-md mb-4
+                   flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4"
                             >
-                                <div className="flex items-center gap-4">
+                                {/* Product Info */}
+                                <div className="flex gap-4 items-center">
                                     <img
                                         src={getimagesrc(item.imageurl) || item.imageurl}
                                         alt={item.productname}
                                         className="w-20 h-20 sm:w-24 sm:h-24 rounded-lg object-cover"
                                     />
-                                    <div>
-                                        <h2 className="text-base sm:text-lg font-semibold">{item.productname}</h2>
-                                        <p className="text-sm sm:text-base text-gray-600">₹{item.price}</p>
 
+                                    <div>
+                                        <h2 className="text-base sm:text-lg font-semibold">
+                                            {item.productname}
+                                        </h2>
+                                        <p className="text-sm sm:text-base text-gray-600">
+                                            ₹{item.price}
+                                        </p>
                                     </div>
                                 </div>
-                                <div className='flex justify-between lg:flex-col lg:items-center gap-2 text-sm sm:text-base'>
-                                    <span className='text-gray-500 flex items-center gap-1'>
-                                        <Star />
-                                        {item.rating ?? '-'}
+
+                                {/* Rating & Discount */}
+                                <div className="flex justify-between lg:flex-col lg:items-center gap-2 text-sm sm:text-base">
+                                    <span className="text-gray-500 flex items-center gap-1">
+                                        <Star size={16} />
+                                        {item.rating ?? "-"}
                                     </span>
 
-                                    <span className='text-green-600 font-semibold'>
+                                    <span className="text-green-600 font-semibold">
                                         {item.discount ?? 0}% OFF
                                     </span>
                                 </div>
+
+                                {/* Price */}
                                 <div className="text-left lg:text-right min-w-[90px]">
                                     <p className="font-semibold text-gray-900 text-sm sm:text-base">
-                                        ₹{(item.price * item.quantity).toLocaleString('en-IN')}
+                                        ₹{(item.price * item.quantity).toLocaleString("en-IN")}
                                     </p>
                                     {item.quantity > 1 && (
                                         <p className="text-xs text-gray-500">
-                                            ₹{item.price.toLocaleString('en-IN')} each
+                                            ₹{item.price.toLocaleString("en-IN")} each
                                         </p>
                                     )}
                                 </div>
@@ -235,28 +245,34 @@ const OrderPage = () => {
                                 <div className="flex items-center gap-3">
                                     <button
                                         onClick={() => decreaseQuantity(item.productId, item.quantity)}
-                                        className="p-2 bg-blue-200 rounded-lg cursor-pointer hover:bg-blue-300"
+                                        className="p-2 bg-blue-200 rounded-lg hover:bg-blue-300"
                                     >
                                         <Minus size={18} />
                                     </button>
+
                                     <span className="font-bold">{item.quantity}</span>
+
                                     <button
                                         onClick={() => increaseQuantity(item.productId)}
-                                        className="p-2 bg-blue-200 rounded-lg cursor-pointer hover:bg-blue-300"
+                                        className="p-2 bg-blue-200 rounded-lg hover:bg-blue-300"
                                     >
                                         <Plus size={18} />
                                     </button>
                                 </div>
 
                                 {/* Delete */}
-                                <button onClick={() => deleteItem(item.productId)} className='p-2 text-red-500 hover:bg-red-50 rounded-lg transition-colors flex-shrink-0 cursor-pointer'>
+                                <button
+                                    onClick={() => deleteItem(item.productId)}
+                                    className="p-2 text-red-500 hover:bg-red-50 rounded-lg self-start lg:self-center"
+                                >
                                     <Trash size={18} />
                                 </button>
                             </motion.div>
                         ))}
                     </AnimatePresence>
 
-                    <div className="bg-white p-5 rounded-2xl shadow-md mb-6 mt-6">
+                    {/* Order Summary */}
+                    <div className="bg-white p-5 sm:p-6 rounded-2xl shadow-md my-6">
                         <h2 className="text-xl sm:text-2xl font-bold mb-4 flex items-center gap-2">
                             <SaveIcon className="text-purple-600" /> Order Summary
                         </h2>
@@ -264,40 +280,48 @@ const OrderPage = () => {
                         <div className="space-y-3 text-sm sm:text-lg">
                             <div className="flex justify-between">
                                 <span className="text-gray-700">Subtotal</span>
-                                <span className="font-medium">₹{subtotal.toLocaleString('en-IN')}</span>
+                                <span className="font-medium">
+                                    ₹{subtotal.toLocaleString("en-IN")}
+                                </span>
                             </div>
 
                             <div className="flex justify-between text-green-600 font-semibold">
                                 <span>Savings</span>
-                                <span> ₹{saving.toLocaleString('en-IN')}</span>
+                                <span>₹{saving.toLocaleString("en-IN")}</span>
                             </div>
 
                             <div className="flex justify-between">
                                 <span className="text-gray-700">Tax (5%)</span>
-                                <span className="font-medium">₹{tax.toLocaleString('en-IN')}</span>
+                                <span className="font-medium">
+                                    ₹{tax.toLocaleString("en-IN")}
+                                </span>
                             </div>
 
-                            <hr className="my-3" />
+                            <hr />
 
                             <div className="flex justify-between text-lg sm:text-xl font-bold text-purple-700">
                                 <span>Total ({cart.length})</span>
-                                <span>₹{totalprice.toLocaleString('en-IN')}</span>
+                                <span>₹{totalprice.toLocaleString("en-IN")}</span>
                             </div>
                         </div>
                     </div>
 
+                    {/* Checkout */}
                     <h1 className="text-2xl sm:text-3xl font-bold mb-4">Checkout</h1>
 
-                    {/* Payment Options */}
+                    {/* Payment Method */}
                     <div className="bg-white shadow p-4 rounded-lg mb-6">
-                        <h2 className="text-xl font-semibold mb-4">Choose Payment Method</h2>
+                        <h2 className="text-lg sm:text-xl font-semibold mb-4">
+                            Choose Payment Method
+                        </h2>
 
-                        <div className="flex gap-4">
+                        <div className="flex flex-wrap gap-3">
                             <button
                                 onClick={() => handlePaymentSelection("Cash on delivery")}
-                                className={`px-4 py-2 rounded-lg border text-sm sm:text-base ${paymentMethod === "Cash on delivery"
-                                    ? "bg-purple-600 text-white"
-                                    : "bg-gray-100"
+                                className={`px-4 py-2 rounded-lg border text-sm sm:text-base
+          ${paymentMethod === "Cash on delivery"
+                                        ? "bg-purple-600 text-white"
+                                        : "bg-gray-100"
                                     }`}
                             >
                                 Cash on Delivery
@@ -305,41 +329,44 @@ const OrderPage = () => {
                         </div>
                     </div>
 
-                    {/* Success/Error Popup */}
-                    {showPopup && (
-                        <SuccessPopup onClick={() => setShowPopup(false)} title={message} bgcolor={"success"} />
-                    )}
-
-                    {/* Address Form */}
+                    {/* Address */}
                     {showAddressForm && (
                         <div className="bg-white shadow p-4 rounded-lg mb-6">
-                            <h2 className="text-lg sm:text-xl font-semibold mb-3">Delivery Address</h2>
+                            <h2 className="text-lg sm:text-xl font-semibold mb-3">
+                                Delivery Address
+                            </h2>
 
                             <textarea
                                 value={address}
                                 onChange={(e) => setAddress(e.target.value)}
                                 placeholder="Enter your full delivery address..."
                                 className="w-full h-28 sm:h-32 border p-3 rounded-lg resize-none"
-                            ></textarea>
+                            />
                         </div>
                     )}
 
+                    {/* Place Order */}
                     {paymentMethod && address && (
                         <button
                             onClick={placeOrder}
                             disabled={isPlacing}
-                            className={`w-full py-3 rounded-lg text-base sm:text-lg  ${isPlacing ? 'bg-gray-400 cursor-not-allowed' : 'bg-purple-600 hover:bg-purple-700'} text-white py-3 rounded-lg text-lg font-semibold transition`}
+                            className={`w-full py-3 rounded-lg text-base sm:text-lg font-semibold transition
+        ${isPlacing
+                                    ? "bg-gray-400 cursor-not-allowed"
+                                    : "bg-purple-600 hover:bg-purple-700 text-white"
+                                }`}
                         >
-                            {isPlacing ? 'Placing Order...' : 'Place Order'}
+                            {isPlacing ? "Placing Order..." : "Place Order"}
                         </button>
                     )}
 
                     {message && (
-                        <p className='text-center text-lg font-medium mt-4 text-blue-600'>
+                        <p className="text-center text-base sm:text-lg font-medium mt-4 text-blue-600">
                             {message}
                         </p>
                     )}
                 </div>
+
             )}
         </div>
     );
