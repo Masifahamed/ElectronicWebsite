@@ -63,6 +63,7 @@ const OrderPage = () => {
         try {
             await axios.post(`${backend}/api/cart/decrease`, { userId, productId, quantity });
             await loadCart();
+
         } catch (err) {
             console.log("decrease error", err);
         }
@@ -73,6 +74,7 @@ const OrderPage = () => {
         try {
             await axios.delete(`${backend}/api/cart/delete/${userId}/${productId}`);
             await loadCart();
+            setmessage("Product removed successfully")
         } catch (err) {
             console.log("delete error", err);
         }
@@ -357,9 +359,9 @@ const OrderPage = () => {
                                 </motion.div>
                             ))}
                         </AnimatePresence>
-                        
+
                         {showPopup && (
-                            <SuccessPopup title={message === "Order Placed Successfully" ? "success" : ""} />
+                            <SuccessPopup title={message === "Order Placed Successfully" || message === "Product removed successfully" ? "success" : ""} />
                         )
                         }
                     </div>
