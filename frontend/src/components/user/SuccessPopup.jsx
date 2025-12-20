@@ -18,7 +18,7 @@ const PopupMessage = ({title,subtitle,content,bgcolor,onclick,path}) => {
         >
           <div className='flex items-start  sm:items-center gap-3 p-3 sm:p-4 md:p-5'>
             <div className={`flex-shrink-0 p-2 rounded-lg ${bgcolor==="success"?"bg-green-400/30":"bg-red-400/30"}`}>
-            <ShoppingCart className='w-4 h-4 sm:w-5 sm:h-5 md:h-6'/>
+            <ShoppingCart className='w-4 h-4 sm:w-5 sm:h-5 md:h-6 md:w-6'/>
             </div>
             <div className='flex-1 min-w-0'>
               <h1 className='font-semibold text-sm sm:text-base md:text-lg lg:text-xl mb-0.5 sm:mb-1'>
@@ -33,7 +33,7 @@ const PopupMessage = ({title,subtitle,content,bgcolor,onclick,path}) => {
               </p>
             </div>
             <button onClick={onclick}>
-              <X className="w-4 h-4" />
+              <X className="w-3.5 h-3.5 sm:w-4 sm:h-4 md:w-5 md:h-5" />
             </button>
           </div>
         </motion.div>
