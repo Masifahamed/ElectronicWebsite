@@ -31,8 +31,8 @@ app.use(express.json());
 
 app.use(cors({
   origin: 'https://frontend-e-commerce-website.onrender.com',
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS']
 }))
 
 const server = http.createServer(app);
