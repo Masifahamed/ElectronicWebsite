@@ -73,7 +73,7 @@ const Register = () => {
     return Object.keys(newErrors).length === 0;
   };
 
- 
+
   // HANDLE SUBMIT 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -82,7 +82,7 @@ const Register = () => {
     setIsLoading(true);
 
     try {
-    
+
       const bodyData = {
         first: formData.first,
         last: formData.last,
@@ -108,7 +108,7 @@ const Register = () => {
       }
 
       console.log("User created:", data);
-    alert("Account created successfully go to login page and register")
+      alert("Account created successfully go to login page and register")
       navigate("/auth/login", {
         state: {
           message: "Account created successfully! Please login.",
@@ -126,43 +126,47 @@ const Register = () => {
 
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-green-50 to-blue-100 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-gradient-to-br from-green-50 to-blue-100 flex items-center justify-center px-3 sm:px-6 md:px-8 lg:px-10 py-6 sm:py-10">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
-        className="max-w-md w-full space-y-8 bg-white rounded-2xl shadow-xl p-8"
+        className="w-full max-w-sm sm:max-w-md md:max-w-lg 
+               bg-white rounded-xl sm:rounded-2xl 
+               shadow-lg sm:shadow-xl 
+               p-4 sm:p-6 md:p-8 space-y-6 sm:space-y-8"
       >
         <div className="text-center">
-          <h2 className="mt-6 text-3xl font-extrabold text-gray-900">
+          <h2 className="mt-2 sm:mt-4 text-2xl sm:text-3xl md:text-4xl 
+                     font-extrabold text-gray-900">
             Create Account
           </h2>
-          <p className="mt-2 text-sm text-gray-600">
+          <p className="mt-1 sm:mt-2 text-xs sm:text-sm md:text-base text-gray-600">
             Join us today and get started
           </p>
         </div>
 
         {/* FORM */}
-        <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
+        <form className="space-y-5 sm:space-y-6" onSubmit={handleSubmit}>
 
           <div className="space-y-4">
             {/* FIRST + LAST NAME */}
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4">
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">
                   First Name
                 </label>
 
                 <div className="relative">
-                  <User className="absolute left-3 top-3 h-5 w-5 text-gray-400" />
+                  <User className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 sm:w-5 sm:h-5 text-gray-400" />
 
                   <input
                     name="first"
                     type="text"
                     value={formData.first}
                     onChange={handleChange}
-                    className={`block w-full pl-10 pr-3 py-3 border rounded-lg ${errors.first ? "border-red-500" : "border-gray-300"
+                    className={`block w-full pl:9  sm:pl:10 py-2.5 sm:py-3 text-sm sm:text-base pl-10 pr-3 py-3 border rounded-lg ${errors.first ? "border-red-500" : "border-gray-300"
                       }`}
                     placeholder="First name"
                   />
@@ -172,7 +176,7 @@ const Register = () => {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">
                   Last Name
                 </label>
 
@@ -181,7 +185,7 @@ const Register = () => {
                   type="text"
                   value={formData.last}
                   onChange={handleChange}
-                  className={`block w-full px-3 py-3 border rounded-lg ${errors.last ? "border-red-500" : "border-gray-300"
+                  className={`w-full text-sm sm:text-base px-3 py-2.5 sm:py-3  border rounded-lg ${errors.last ? "border-red-500" : "border-gray-300"
                     }`}
                   placeholder="Last name"
                 />
@@ -191,7 +195,7 @@ const Register = () => {
 
             {/* EMAIL */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-xs sm:text-base font-medium text-gray-700 mb-1">
                 Email Address
               </label>
 
@@ -203,7 +207,9 @@ const Register = () => {
                   type="email"
                   value={formData.email}
                   onChange={handleChange}
-                  className={`block w-full pl-10 pr-3 py-3 border rounded-lg ${errors.email ? "border-red-500" : "border-gray-300"
+                  className={`w-full pl-9 sm:pl-10 py-2.5 sm:py-3 
+                       text-sm sm:text-base 
+                       border rounded-lg border-gray-300 ${errors.email ? "border-red-500" : "border-gray-300"
                     }`}
                   placeholder="Enter your email"
                 />
@@ -214,19 +220,21 @@ const Register = () => {
 
             {/* PHONE */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm sm:text-base font-medium text-gray-700 mb-1">
                 Phone Number
               </label>
 
               <div className="relative">
-                <Phone className="absolute left-3 top-3 h-5 w-5 text-gray-400" />
+                <Phone className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 sm:h-5 sm:w-5 text-gray-400" />
 
                 <input
                   name="phone"
                   type="tel"
                   value={formData.phone}
                   onChange={handleChange}
-                  className={`block w-full pl-10 pr-3 py-3 border rounded-lg ${errors.phone ? "border-red-500" : "border-gray-300"
+                  className={`w-full pl-9 sm:pl-10 py-2.5 sm:py-3 
+                       text-sm sm:text-base 
+                       border rounded-lg border-gray-300 ${errors.phone ? "border-red-500" : "border-gray-300"
                     }`}
                   placeholder="Enter your phone"
                 />
@@ -249,7 +257,10 @@ const Register = () => {
                   type={showPassword ? "text" : "password"}
                   value={formData.password}
                   onChange={handleChange}
-                  className={`block w-full pl-10 pr-10 py-3 border rounded-lg ${errors.password ? "border-red-500" : "border-gray-300"
+                  className={`w-full pl-9 sm:pl-10 pr-10 
+                           py-2.5 sm:py-3 
+                           text-sm sm:text-base 
+                           border rounded-lg border-gray-300 ${errors.password ? "border-red-500" : "border-gray-300"
                     }`}
                   placeholder="Create a password"
                 />

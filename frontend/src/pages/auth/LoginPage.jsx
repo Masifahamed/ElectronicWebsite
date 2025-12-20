@@ -69,42 +69,53 @@ const handleChange = (e) => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 
+                flex items-center justify-center 
+                px-3 sm:px-6 md:px-8 lg:px-10 py-6 sm:py-10">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
-        className="w-full max-w-md space-y-8 bg-white rounded-2xl shadow-xl p-8"
+        className="w-full max-w-sm sm:max-w-md md:max-w-lg 
+               bg-white rounded-xl sm:rounded-2xl 
+               shadow-lg sm:shadow-xl 
+               p-4 sm:p-6 md:p-8 space-y-6 sm:space-y-8"
       >
         <div className="text-center">
-          <h2 className="mt-6 text-3xl font-extrabold text-gray-900">Welcome Back</h2>
-          <p className="mt-2 text-sm text-gray-600">Sign in to your account</p>
+          <h2 className="mt-2 sm:mt-4 text-2xl sm:text-3xl md:text-4xl 
+                     font-extrabold text-gray-900">Welcome Back</h2>
+          <p className="mt-1 sm:mt-2 text-xs sm:text-sm md:text-base text-gray-600">Sign in to your account</p>
         </div>
 
-        <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
+        <form className="space-y-5 sm:space-y-6" onSubmit={handleSubmit}>
           <div className="space-y-4">
             {/* Email */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
               <div className="relative">
-                <Mail className="absolute left-3 top-3 h-5 w-5 text-gray-400" />
+                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 
+                             h-4 w-4 sm:h-5 sm:w-5 text-gray-400" />
                 <input
                   name="email"
                   type="email"
                   value={formData.email}
                   onChange={handleChange}
-                  className={`block w-full pl-10 pr-3 py-3 border rounded-lg ${
-                    errors.email ? 'border-red-500' : 'border-gray-300'
+                  className={`block w-full pl-9 sm:pl-10 pr-3 
+                          py-2.5 sm:py-3 
+                          text-sm sm:text-base 
+                          border rounded-lg 
+                          focus:outline-none focus:ring-2 focus:ring-blue-500
+                          ${errors.email ? "border-red-500" : "border-gray-300"
                   }`}
                   placeholder="Enter your email"
                 />
               </div>
-              {errors.email && <p className="text-red-600 text-sm">{errors.email}</p>}
+              {errors.email && <p className="text-red-600 text-xs sm:text-sm mt-1">{errors.email}</p>}
             </div>
 
             {/* Password */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Password</label>
+              <label className="block text-sm sm:text-sm font-medium text-gray-700 mb-1">Password</label>
               <div className="relative">
                 <Lock className="absolute left-3 top-3 h-5 w-5 text-gray-400" />
                 <input
@@ -126,23 +137,23 @@ const handleChange = (e) => {
                                   <Eye className="h-5 w-5 text-gray-400 hover:text-gray-600" />}
                 </button>
               </div>
-              {errors.password && <p className="text-red-600 text-sm">{errors.password}</p>}
+              {errors.password && <p className="text-red-600 text-sm sm:text-sm mt-1">{errors.password}</p>}
             </div>
           </div>
 
           {/* Submit Error */}
-          {errors.submit && <div className="bg-red-100 p-3 rounded text-red-700">{errors.submit}</div>}
+          {errors.submit && <div className="bg-red-100 p-3 rounded text-red-700 text-xs sm:text-sm">{errors.submit}</div>}
 
           {/* Submit Button */}
           <button
             type="submit"
             disabled={isLoading}
-            className="w-full py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full py-2.5 sm:text-base bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {isLoading ? "Signing in..." : "Sign in"}
           </button>
 
-          <p className="text-center text-sm text-gray-600">
+          <p className="text-center text-xs sm:text-sm text-gray-600">
             Don't have an account?{' '}
             <Link to="/auth/register" className="text-blue-600 hover:text-blue-500">
               Sign up here

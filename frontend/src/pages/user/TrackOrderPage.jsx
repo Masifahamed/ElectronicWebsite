@@ -239,10 +239,10 @@ const OrderTracking = () => {
           overflow-hidden relative"
           >
             {/* Header with Blue Background */}
-            <div className="bg-gradient-to-r from-blue-600 to-blue-700 text-white p-4 sm:p-5 md:p-6">
+            <div className="bg-gradient-to-r from-blue-600 to-blue-700 text-white p-4 sm:p-5 md:p-6 relative">
               <div className="flex justify-between items-start">
                 <div>
-                  <h2 className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold mb-1 sm:mb-2">
+                  <h2 className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold mb-1 sm:mb-2 wrap-anywhere">
                     Order #{order._id}
                   </h2>
                   <p className="text-sm sm:text-base md:text-lg opacity-90">
@@ -251,7 +251,7 @@ const OrderTracking = () => {
                 </div>
                 <button
                   onClick={() => { setShowpopup(false); setOrder(null) }}
-                  className="p-1 sm:p-2 hover:bg-white/20 rounded-lg transition-colors"
+                  className="p-1 sm:p-2 absolute right-2 top-2  hover:bg-white/20 rounded-lg transition-colors"
                   aria-label="Close"
                 >
                   <X className="w-5 h-5 sm:w-6 sm:h-6 md:w-7 md:h-7" />
@@ -345,16 +345,16 @@ const OrderTracking = () => {
                   <div className="space-y-1.5 sm:space-y-2 text-sm sm:text-base">
                     <div className="flex justify-between">
                       <span className="text-gray-600">Items Total</span>
-                      <span>₹{order.ordersummary?.subtotal?.toLocaleString("en-IN")}</span>
+                      <span>₹{Number(order.ordersummary?.subtotal || 0).toLocaleString("en-IN")}</span>
                     </div>
                     <div className="flex justify-between">
                       <span className="text-gray-600">Tax</span>
-                      <span>₹{order.ordersummary?.tax?.toLocaleString("en-IN")}</span>
+                      <span>₹{Number(order.ordersummary?.tax || 0).toLocaleString("en-IN")}</span>
                     </div>
                     <div className="flex justify-between font-bold text-base sm:text-lg md:text-xl pt-2 border-t">
                       <span>Total Amount</span>
                       <span className="text-blue-700">
-                        ₹{order.ordersummary?.totalprice?.toLocaleString("en-IN")}
+                        ₹{Number(order.ordersummary?.totalprice || 0).toLocaleString("en-IN") ?? 0}
                       </span>
                     </div>
                   </div>
