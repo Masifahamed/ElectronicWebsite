@@ -358,11 +358,6 @@ const OrderPage = () => {
                             ))}
                         </AnimatePresence>
                     </div>
-                    {
-                        showPopup && (
-                            <SuccessPopup onClick={() => setShowPopup(false)} title={message} bgcolor={"success"} />
-                        )
-                    }
 
                     {/* Order Summary */}
                     <div className="bg-white p-4 sm:p-5 md:p-6 rounded-xl sm:rounded-2xl shadow-md my-4 sm:my-5 md:my-6">
@@ -423,7 +418,11 @@ const OrderPage = () => {
                                 {/* Add more payment buttons here if needed */}
                             </div>
                         </div>
-
+                        {
+                            showPopup && (
+                                <SuccessPopup onClick={() => setShowPopup(false)} title={message} bgcolor={"success"} />
+                            )
+                        }
                         {/* Address */}
                         {showAddressForm && (
                             <div className="bg-white shadow-sm sm:shadow p-3 sm:p-4 md:p-5 rounded-lg">
@@ -466,11 +465,14 @@ const OrderPage = () => {
                             </div>
                         )}
 
-                        {message && (
-                            <p className={`text-center text-sm sm:text-base md:text-lg font-medium py-2 sm:py-3 px-4 `}>
-                                {message}
-                            </p>
-                        )}
+                        {
+                            message && (
+                                <p className='text-center text-lg font-medium mt-4 text-blue-600'>
+                                    {message}
+                                </p>
+                            )
+                        }
+
                     </div>
                 </div>
             )}
@@ -479,3 +481,7 @@ const OrderPage = () => {
 };
 
 export default OrderPage;
+
+
+
+
