@@ -276,6 +276,12 @@ const OrderPage = () => {
                             ))}
                         </AnimatePresence>
                     </div>
+                    {/* Success/Error Popup */}
+                    {
+                        showPopup && (
+                            <SuccessPopup onClick={() => setShowPopup(false)} title={message} bgcolor={"success"} />
+                        )
+                    }
 
                     {/* Desktop/Tablet Layout (Grid) */}
                     <div className="hidden lg:block max-w-7xl mx-auto">
@@ -460,6 +466,7 @@ const OrderPage = () => {
                                 </button>
                             </div>
                         )}
+
 
                         {message && (
                             <p className={`text-center text-sm sm:text-base md:text-lg font-medium py-2 sm:py-3 px-4 rounded-lg
