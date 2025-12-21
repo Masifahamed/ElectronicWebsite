@@ -563,7 +563,7 @@ const ProductPage = () => {
 
       {/* Product Grid */}
       {filteredProducts.length > 0 ? (
-        <div className="grid gap-15 md:grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 justify-items-center gap-y-10">
+        <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 sm:gap-15 md:gap-17 lg:gap-19 justify-items-center gap-y-10 mx-10">
           {filteredProducts.map((product) => (
             <motion.div
               key={product._id}
@@ -679,30 +679,36 @@ const ProductPage = () => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50"
+            className="fixed inset-0 bg-black/50 flex items-center justify-center 
+           px-3 sm:px-6 md:px-10 py-6 z-50"
             onClick={() => setShowProductPopup(false)}
           >
             <motion.div
               initial={{ scale: 0.9, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.9, opacity: 0 }}
-              className="bg-white rounded-2xl max-w-6xl w-full max-h-[95vh] overflow-y-auto"
+              className="bg-white rounded-2xl w-full 
+           max-w-[95%] sm:max-w-3xl md:max-w-5xl 
+           max-h-[90vh] overflow-y-auto"
               onClick={(e) => e.stopPropagation()}
             >
-              <div className="grid md:grid-cols-2 gap-8 p-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 
+                gap-6 sm:gap-8 
+                p-4 sm:p-6">
                 {/* Product Image */}
                 <div className="relative">
                   <img
                     src={selectedProduct.imageurl}
                     alt={selectedProduct.productname}
-                    className="w-full h-96 object-cover rounded-2xl"
+                    className="w-full h-64 sm:h-80 md:h-96 
+           object-cover rounded-xl"
                   />
                   <div className="absolute top-4 left-4 bg-red-500 text-white px-3 py-1 rounded-full text-sm font-semibold">
                     {selectedProduct.discount}% OFF
                   </div>
                   <button
                     onClick={() => setShowProductPopup(false)}
-                    className="absolute top-0 right-0 w-8 h-8 bg-gray-200 rounded-full flex items-center cursor-pointer justify-center hover:bg-gray-300 transition-all duration-300"
+                    className="absolute top-3 right-3 w-8 h-8 bg-gray-200 rounded-full flex items-center cursor-pointer justify-center hover:bg-gray-300 transition-all duration-300"
                   >
                     <X className="w-4 h-4 text-gray-600" />
                   </button>

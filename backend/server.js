@@ -21,6 +21,11 @@ import path from 'path';
 //import paymentRoutes from './routes/paymentRoutes.js';
 
 //import paymentRoutes from './routes/paymentRoutes.js';
+const frontend="https://frontend-e-commerce-website.onrender.com"
+const backend="https://electronicwebsite-backend.onrender.com"
+
+const loaclbackend="http://localhost:3500"
+const localfrontend="http://localhost:5173"
 
 dotenv.config()
 const app = express();
@@ -30,7 +35,7 @@ app.use(express.json());
 
 
 app.use(cors({
-  origin: 'https://frontend-e-commerce-website.onrender.com',
+  origin: frontend,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   credentials: true,
 }))
@@ -39,7 +44,7 @@ const server = http.createServer(app);
 
 const io = new Server(server, {
   cors: {
-    origin: "https://frontend-e-commerce-website.onrender.com",
+    origin:frontend,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     credentials:true
   }
@@ -79,8 +84,8 @@ app.get('/health', (req, res) => {
   res.json({
     status: 'OK',
     message: 'Backend API is running',
-    frontend: 'https://frontend-e-commerce-website.onrender.com',
-    backend: `https://electronicwebsite-backend.onrender.com`
+    frontend: frontend,
+    backend: backend
   })
 })
 

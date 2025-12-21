@@ -67,7 +67,7 @@ const AdminDashboard = () => {
       {/* Mobile menu button */}
       <button
         onClick={() => setSidebarOpen(true)}
-        className="lg:hidden fixed top-4 left-4 z-50 p-2 rounded-md bg-white shadow-md text-gray-600 hover:bg-gray-100"
+        className="lg:hidden fixed top-4 left-4 z-50  p-2 rounded-md shadow-md text-gray-600 hover:bg-gray-100"
       >
         <Menu size={20} />
       </button>
@@ -135,7 +135,7 @@ const AdminDashboard = () => {
       {/* Mobile sidebar overlay */}
       {sidebarOpen && (
         <div
-          className="fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden"
+          className="fixed inset-0 bg-transparent bg-opacity-50 z-40 lg:hidden"
           onClick={() => setSidebarOpen(false)}
         />
       )}

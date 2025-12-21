@@ -201,7 +201,7 @@ const WishlistPage = () => {
       {/* Wishlist Items */}
       {wishlistItems.length > 0 ? (
         <div className="max-w-7xl ms-2 me-5">
-          <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 justify-items-center">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-10 sm:gap-15 md:gap-17 lg:gap-25 justify-items-center">
             {sortedWishlist.map((product) => (
               <motion.div
                 key={product._id}
