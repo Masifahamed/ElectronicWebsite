@@ -349,7 +349,7 @@ const OrderTracking = () => {
                     </div>
                     <div className="flex justify-between">
                       <span className="text-gray-600">Tax</span>
-                      <span>₹{Number(order.ordersummary?.tax || 0).toLocaleString("en-IN")}</span>
+                      <span>₹{order.ordersummary?.subtotal * 0.05.toFixed(2)}</span>
                     </div>
                     <div className="flex justify-between font-bold text-base sm:text-lg md:text-xl pt-2 border-t">
                       <span>Total Amount</span>
