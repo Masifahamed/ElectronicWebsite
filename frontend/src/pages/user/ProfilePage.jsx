@@ -370,21 +370,21 @@ const ProfilePage = () => {
 
 
   return (
-    <div className="bg-gray-50 min-h-screen flex">
+    <div className="bg-gray-50 min-h-screen flex flex-col lg:flex-row">
       {/* Left Side Profile Header */}
-      <div className="bg-gradient-to-b from-blue-700 to-indigo-500 text-white w-80 items-center flex flex-col">
-        <div className="flex flex-col items-center mt-10 flex-1 gap-3">
+      <div className="bg-gradient-to-b from-blue-700 to-indigo-500 text-white w-full lg:w-80 items-center flex flex-col px-4 sm:px-6">
+        <div className="flex flex-col items-center mt-6 lg:mt-10 w-full gap-4">
           {/* User Avatar */}
-          <div className="w-32 h-32 bg-white/20 rounded-full flex items-center justify-center border-4 border-white/30">
-            <User className="w-16 h-16" />
+          <div className="w-24 h-24 sm:w-28 sm:h-28 lg:w-32 lg:h-32 bg-white/20 rounded-full flex items-center justify-center border-4 border-white/30">
+            <User className="w-12 h-12 sm:w-14 sm:h-14 lg:w-16 lg:h-16" />
           </div>
 
           {/* User Info */}
           <div className="text-center">
-            <h2 className="text-3xl font-bold mb-2">
+            <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold text-center mb-2">
               {userData.first} {userData.last}
             </h2>
-            <p className="text-blue-100 text-lg">{userData.email}</p>
+            <p className="text-blue-100 text-sm sm:text-base text-center break-all">{userData.email}</p>
             {userData.phone && (
               <p className="text-blue-100 text-sm mt-1">{userData.phone}</p>
             )}
@@ -420,7 +420,7 @@ const ProfilePage = () => {
           </button>
 
           {/* Additional Stats from Profile Object */}
-          <div className="w-full mt-8 space-y-4">
+          <div className="w-full mt-8 space-y-4 mb-3">
             <div className="bg-white/10 rounded-lg p-4 text-center">
               <div className="flex items-center justify-center space-x-2 mb-2">
                 <Calendar className="w-5 h-5" />
@@ -515,7 +515,7 @@ const ProfilePage = () => {
             </div>
           </div>
           
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="text-center p-4 bg-gray-50 rounded-lg">
                 <p className="text-2xl font-bold text-red-500">{wishlistStats.length}</p>
                 <p className="text-sm text-gray-600">Items Saved</p>

@@ -16,9 +16,9 @@ const Navbar = () => {
   // Check authentication status and get user data
   const checkAuth = () => {
     //backend response
- const token = localStorage.getItem('auth_token');
+    const token = localStorage.getItem('auth_token');
     const userData = localStorage.getItem('auth_user');
-    
+
     if (token && userData) {
       try {
         const user = JSON.parse(userData);
@@ -79,24 +79,22 @@ const Navbar = () => {
   }, [isAuthenticated, showAuthPopup]);
 
   // Common Classes for consistent styling
-  const navlinkclasses = (isActive) => 
-    `hover:text-blue-400 transition cursor-pointer py-2 ${
-      isActive ? 'text-blue-400' : 'text-gray-500'
+  const navlinkclasses = (isActive) =>
+    `hover:text-blue-400 transition cursor-pointer py-2 ${isActive ? 'text-blue-400' : 'text-gray-500'
     }`;
 
   // Mobile navlink classes
-  const mobilenavlink = (isActive) => 
-    `hover:text-blue-400 transition cursor-pointer py-2 ${
-      isActive ? 'text-blue-400' : 'text-gray-500'
+  const mobilenavlink = (isActive) =>
+    `hover:text-blue-400 transition cursor-pointer py-2 ${isActive ? 'text-blue-400' : 'text-gray-500'
     }`;
 
   // Navigation items with their routes
   const navItems = [
-    { name: "Home", path: "/", icon: <Home className="h-5 w-5" />,requiresAuth:true},
-    { name: "Order", path: "/orders", icon: <List className="h-5 w-5" />,requiresAuth:true},
-    { name: "Wishlist", path: "/wishlist", icon: <Heart className="h-5 w-5" />,requiresAuth:true},
-    { name: "Profile", path: "/profile", icon: <User className="h-5 w-5" />,requiresAuth:true},
-    { name: "Product", path: "/product", icon: <ShoppingBag className="h-5 w-5" />,requiresAuth:true}
+    { name: "Home", path: "/", icon: <Home className="h-5 w-5" />, requiresAuth: true },
+    { name: "Order", path: "/orders", icon: <List className="h-5 w-5" />, requiresAuth: true },
+    { name: "Wishlist", path: "/wishlist", icon: <Heart className="h-5 w-5" />, requiresAuth: true },
+    { name: "Profile", path: "/profile", icon: <User className="h-5 w-5" />, requiresAuth: true },
+    { name: "Product", path: "/product", icon: <ShoppingBag className="h-5 w-5" />, requiresAuth: true }
   ];
 
   // Sticky Function
@@ -115,7 +113,7 @@ const Navbar = () => {
       setIsOpen(false);
       return;
     }
-    navigate(path); 
+    navigate(path);
     setIsOpen(false);
   };
 
@@ -131,20 +129,23 @@ const Navbar = () => {
   };
 
   const handleLogout = () => {
-    localStorage.removeItem('auth_token');
-    localStorage.removeItem('auth_user');
-    setIsAuthenticated(false);
-    setUserName("");
-    setShowAuthPopup(false);
-    navigate('/auth/login');
-    window.dispatchEvent(new Event('storage')); // Notify other tabs
+    if (window.confirm(`Are you sure you want to logout?`)) {
+      localStorage.removeItem('auth_token');
+      localStorage.removeItem('auth_user');
+      window.dispatchEvent(new Event('storage')); // Notify other tabs
+      setIsAuthenticated(false);
+      setUserName("");
+      setShowAuthPopup(false);
+      navigate('/auth/login');
+    }
+
   };
 
   // Event listener setup and cleanup
   useEffect(() => {
     const handleScroll = () => stickyHeader();
     window.addEventListener('scroll', handleScroll);
-    
+
     // Cleanup Function
     return () => {
       window.removeEventListener('scroll', handleScroll);
@@ -165,7 +166,7 @@ const Navbar = () => {
             src={logo}
             alt="logo of electronic"
             className="w-25 h-25 object-cover"
-            //onClick={() => handleNavigation("/")}
+          //onClick={() => handleNavigation("/")}
           />
         </div>
 
@@ -248,7 +249,7 @@ const Navbar = () => {
                     </span>
                   </li>
                 )}
-                
+
                 {navItems.map((item) => {
                   const isActive = location.pathname === item.path;
                   return (
@@ -309,8 +310,8 @@ const Navbar = () => {
               className="bg-white relative rounded-lg p-6 max-w-md w-full"
               onClick={(e) => e.stopPropagation()}
             >
-              <X 
-                className="absolute top-3 right-3 cursor-pointer h-5 w-5" 
+              <X
+                className="absolute top-3 right-3 cursor-pointer h-5 w-5"
                 onClick={() => setShowAuthPopup(false)}
               />
               <h3 className="text-xl font-bold text-gray-800 mb-4">

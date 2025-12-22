@@ -24,7 +24,7 @@ import path from 'path';
 const frontend="https://frontend-e-commerce-website.onrender.com"
 const backend="https://electronicwebsite-backend.onrender.com"
 
-const loaclbackend="http://localhost:3500"
+const localbackend="http://localhost:3500"
 const localfrontend="http://localhost:5173"
 
 dotenv.config()
@@ -35,7 +35,7 @@ app.use(express.json());
 
 
 app.use(cors({
-  origin: frontend,
+  origin:frontend,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   credentials: true,
 }))

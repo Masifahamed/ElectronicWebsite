@@ -2,13 +2,14 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { backend } from "../../../ultis/constant";
-
+import SuccessPopup from "../SuccessPopup"
 const ArrivalNew = () => {
   const navigate = useNavigate();
 
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
-
+  const [showpopup, setShowPopup] = useState(false)
+  const [message, setMessage] = useState("")
   const user = JSON.parse(localStorage.getItem("auth_user"))
   const userId = user?._id
 
@@ -17,7 +18,7 @@ const ArrivalNew = () => {
     "w-40 font-pop text-[14px] leading-[21px] text-white tracking-[0%] font-regular",
   ];
 
-  
+
   useEffect(() => {
     const fetchArrivalProducts = async () => {
       try {
@@ -37,7 +38,7 @@ const ArrivalNew = () => {
     fetchArrivalProducts();
   }, []);
 
- 
+
   const handleShopNow = async (product) => {
     try {
 
@@ -48,12 +49,17 @@ const ArrivalNew = () => {
         productname: product.productname,
         price: product.price,
         discount: product.discount,
-        rating: product.rating && product.rating<5?product.rating:Math.floor(Math.random()*5)+1,
+        rating: product.rating && product.rating < 5 ? product.rating : Math.floor(Math.random() * 5) + 1,
         originalprice: product.originalprice,
         category: product.category,
       });
-      alert("product is added cart successfully")
-     // navigate("/orders");
+      //alert("product is added cart successfully")
+      setMessage(`${product.productname} added successfully`)
+      setShowPopup(true)
+      // navigate("/orders");
+      setTimeout(() => {
+        setShowPopup(false)
+      }, 2000);
     } catch (err) {
       console.error("Error adding to cart", err);
     }
@@ -130,6 +136,11 @@ const ArrivalNew = () => {
                 <div className="w-20 h-0.5 bg-gray-400 rounded-full mt-1"></div>
               </div>
             </div>
+            {
+              showpopup && (
+                <SuccessPopup title={message} bgcolor="success" />
+              )
+            }
 
             {/* Bottom Small Two */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">

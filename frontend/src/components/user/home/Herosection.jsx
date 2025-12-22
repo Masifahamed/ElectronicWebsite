@@ -4,7 +4,8 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { X, CheckCircle, ShoppingCart, Eye, Star, Heart, Share2, LoaderIcon } from 'lucide-react';
 import axios from 'axios';
 import SuccessPopup from './../SuccessPopup'
-import { backend } from '../../../ultis/constant';
+import { backend, getimagesrc } from '../../../ultis/constant';
+
 
 const API_CART = `${backend}/api/cart`
 const API_HERO = `${backend}/api/hero`

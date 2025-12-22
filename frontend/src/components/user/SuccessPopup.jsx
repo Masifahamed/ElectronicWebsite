@@ -9,7 +9,7 @@ const PopupMessage = ({ title, subtitle, content, bgcolor, onclick, path }) => {
         animate={{ opacity: 1, y: 0 }}
         exit={{ opacity: 0, y: -50 }}
         aria-live="polite"
-        className={`fixed z-[80] w-[calc(50vw-2rem)] max-w-md sm:max-w-md lg:max-w-md
+        className={`fixed z-[80] w-[calc(100vw-2rem)] max-w-md sm:max-w-md lg:max-w-md
         ${bgcolor === "success" ? "bg-green-500" : "bg-red-500"}
         text-white rounded-xl sm:rounded-2xl shadow-xl
         bottom-4 left-1/2 -translate-x-1/2

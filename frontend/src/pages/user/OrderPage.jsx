@@ -207,7 +207,7 @@ const OrderPage = () => {
                                     {/* Product Row */}
                                     <div className="flex gap-3 sm:gap-4 items-start mb-3 sm:mb-4">
                                         <img
-                                            src={getimagesrc(item.imageurl) || item.imageurl}
+                                            src={getimagesrc(item.imageurl)}
                                             alt={item.productname}
                                             className="w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 rounded-lg object-cover flex-shrink-0"
                                         />
